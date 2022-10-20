@@ -108,6 +108,14 @@ namespace UnionType.Test
             Assert.AreEqual(12.33m, v.Decimal);
         }
         [TestMethod]
+        public void NewGuid()
+        {
+            var gid = Guid.NewGuid();
+            var v = new UnionValue { Guid = gid };
+            Assert.AreEqual(UnionValueType.Guid, v.UnionValueType);
+            Assert.AreEqual(gid, v.Guid);
+        }
+        [TestMethod]
         public void NewDateTime()
         {
             var now = DateTime.Now;

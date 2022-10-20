@@ -28,6 +28,14 @@ namespace UnionType.Test
             Assert.AreEqual(a.GetType(), val.TypeNameType);
         }
         [TestMethod]
+        public void StoreNull()
+        {
+            var val = new UnionValue();
+            val.SetObject(null);
+            Assert.AreEqual(IntPtr.Zero, val.IntPtr);
+            Assert.AreEqual(UnionValueType.Empty, val.UnionValueType);
+        }
+        [TestMethod]
         public void StoreStruct()
         {
             var a = new B { Name = "123" };

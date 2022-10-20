@@ -26,5 +26,6 @@ namespace UnionType
 
         TimeSpan = 100,
         IntPtr = TimeSpan + 1,
+        Guid = TimeSpan + 2,
     }
 }

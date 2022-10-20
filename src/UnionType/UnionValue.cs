@@ -16,8 +16,7 @@ namespace UnionType
         static UnionValue()
         {
             var n = typeof(string).AssemblyQualifiedName;
-            fixed (char* c = n)
-                stringPtr = new IntPtr(c);
+            stringPtr = (IntPtr)GCHandle.Alloc(n);
         }
 
         [FieldOffset(0)]
@@ -50,6 +49,8 @@ namespace UnionType
         private DateTime @dateTime;
         [FieldOffset(0)]
         private TimeSpan @timeSpan;
+        [FieldOffset(0)]
+        private Guid @guid;
         [FieldOffset(0)]//8L
         private IntPtr @intPtr;
         [FieldOffset(8)]//8L
@@ -57,6 +58,17 @@ namespace UnionType
         [FieldOffset(16)]
         private UnionValueType unionValueType;
 
+        public Guid Guid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => @guid;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                @guid = value;
+                unionValueType = UnionValueType.Guid;
+            }
+        }
         public bool Boolean
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -268,15 +280,14 @@ namespace UnionType
                 {
                     return null;
                 }
-                return Marshal.PtrToStringAuto(typeName);
+                return (string)GCHandle.FromIntPtr(typeName).Target;
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 if (value!=null)
                 {
-                    fixed (char* c = value)
-                        typeName = new IntPtr(c);
+                    typeName = (IntPtr)GCHandle.Alloc(value);
                 }
                 else
                 {
@@ -293,20 +304,14 @@ namespace UnionType
                 {
                     return null;
                 }
-                return Marshal.PtrToStringAuto(IntPtr);
+                return (string)GCHandle.FromIntPtr(IntPtr).Target;
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 if (value != null)
                 {
-                    unsafe
-                    {
-                        fixed (char* c = value)
-                        {
-                            intPtr = new IntPtr(c);
-                        }
-                    }
+                    intPtr = (IntPtr)GCHandle.Alloc(value);
                 }
                 else
                 {
@@ -363,16 +368,16 @@ namespace UnionType
             Unsafe.Copy(buffer, ref this);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T GetObject<T>()
+        public T? GetObject<T>()
         {
-            return (T)GetObject();
+            return (T?)GetObject();
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object GetObject()
+        public object? GetObject()
         {
             return GCHandle.FromIntPtr(IntPtr).Target;
         }
-        public void SetObject(object value)
+        public void SetObject(object? value)
         {
             if (value == null)
             {
@@ -415,19 +420,21 @@ namespace UnionType
                 case UnionValueType.Empty:
                     return "(null)";
                 case UnionValueType.Object:
-                    return IntPtr.ToString("X");
+                    return intPtr.ToString("X");
                 case UnionValueType.DBNull:
                     return DBNull.Value.ToString();
                 case UnionValueType.DateTime:
-                    return DateTime.ToString();
+                    return dateTime.ToString();
                 case UnionValueType.TimeSpan:
-                    return TimeSpan.ToString();
+                    return timeSpan.ToString();
                 case UnionValueType.String:
                     return String;
                 case UnionValueType.Char:
-                    return Char.ToString();
+                    return @char.ToString();
                 case UnionValueType.IntPtr:
-                    return IntPtr.ToString();
+                    return intPtr.ToString("X");
+                case UnionValueType.Guid:
+                    return guid.ToString();
                 default:
                     {
                         if (IsNumeric())
@@ -510,6 +517,11 @@ namespace UnionType
         public static bool operator !=(UnionValue left, UnionValue right)
         {
             return !(left == right);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator UnionValue(Guid val)
+        {
+            return new UnionValue { Guid = val };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator UnionValue(bool val)
@@ -602,6 +614,12 @@ namespace UnionType
             return new UnionValue { IntPtr = val };
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Guid(UnionValue val)
+        {
+            return val.Guid;
+        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator bool(UnionValue val)
         {

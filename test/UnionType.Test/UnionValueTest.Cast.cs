@@ -168,6 +168,16 @@ namespace UnionType.Test
             DBNull a = DBNull.Value;
             UnionValue b = a;
             Assert.AreEqual( UnionValueType.DBNull, b.UnionValueType);
+            a = b;
+            Assert.AreEqual(DBNull.Value, a);
+        }
+        public void Cast_Guid()
+        {
+            var a = Guid.NewGuid();
+            UnionValue b = a;
+            Assert.AreEqual(a, b.Guid);
+            a = b;
+            Assert.AreEqual(a, b.Guid);
         }
     }
 }

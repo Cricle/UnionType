@@ -4,6 +4,7 @@
     {
         unsafe static void Main(string[] args)
         {
+            Console.WriteLine(sizeof(Guid));
             var size = sizeof(UnionValue);
             Console.WriteLine(size);
             size = sizeof(decimal);

@@ -17,7 +17,7 @@ namespace UnionType.Test
         public void ToString_IntPtr()
         {
             var ptr = new IntPtr(123);
-            Assert.AreEqual(ptr.ToString(), new UnionValue { IntPtr= ptr }.ToString());
+            Assert.AreEqual(ptr.ToString("X"), new UnionValue { IntPtr= ptr }.ToString());
         }
         [TestMethod]
         public void ToString_DbNull()

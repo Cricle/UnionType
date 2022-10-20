@@ -21,6 +21,16 @@ namespace UnionType.Test
             Assert.IsFalse(a == c);
             Assert.IsTrue(a == d);
             Assert.IsFalse(a == e);
+
+            Assert.IsFalse(a.Equals((object)b));
+            Assert.IsFalse(a.Equals((object)c));
+            Assert.IsTrue(a.Equals((object)d));
+            Assert.IsFalse(a.Equals((object)e));
+
+            Assert.IsTrue(a != b);
+            Assert.IsTrue(a != c);
+            Assert.IsFalse(a != d);
+            Assert.IsTrue(a != e);
         }
         [TestMethod]
         public void HashCodes()
