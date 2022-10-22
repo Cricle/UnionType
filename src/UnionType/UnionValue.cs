@@ -6,7 +6,7 @@ namespace UnionType
 {
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]
-    public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable
+    public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable
     {
         public static readonly int Size = sizeof(UnionValue);
 
@@ -280,7 +280,7 @@ namespace UnionType
                 {
                     return null;
                 }
-                return (string)GCHandle.FromIntPtr(typeName).Target;
+                return (string?)GCHandle.FromIntPtr(typeName).Target;
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
@@ -304,7 +304,7 @@ namespace UnionType
                 {
                     return null;
                 }
-                return (string)GCHandle.FromIntPtr(IntPtr).Target;
+                return (string?)GCHandle.FromIntPtr(IntPtr).Target;
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
@@ -390,6 +390,7 @@ namespace UnionType
                 var point = GCHandle.Alloc(value);
                 IntPtr = (IntPtr)point;
                 TypeNameType = value!.GetType();
+                unionValueType = UnionValueType.Object;
             }
         }
 
@@ -703,7 +704,7 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator string?(UnionValue val)
         {
-            return val.ToString();
+            return val.String;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator IntPtr(UnionValue val)
@@ -717,6 +718,226 @@ namespace UnionType
         public UnionValue Clone()
         {
             return this;
+        }
+
+        public int CompareTo(object? obj)
+        {
+            var box = Box();
+            var objBox = obj;
+            if (obj is UnionValue uv)
+            {
+                objBox = uv.Box();
+            }
+            if (box is IComparable comparable)
+            {
+                return comparable.CompareTo(objBox);
+            }
+            throw new NotSupportedException("Type must implement IComparable");
+        }
+        public object? Box()
+        {
+            switch (unionValueType)
+            {
+                case UnionValueType.Empty:
+                    return null;
+                case UnionValueType.Object:
+                    return GetObject();
+                case UnionValueType.DBNull:
+                    return DBNull.Value;
+                case UnionValueType.Boolean:
+                    return boolean;
+                case UnionValueType.Char:
+                    return @char;
+                case UnionValueType.SByte:
+                    return @sbyte;
+                case UnionValueType.Byte:
+                    return @byte;
+                case UnionValueType.Int16:
+                    return @short;
+                case UnionValueType.UInt16:
+                    return @ushort;
+                case UnionValueType.Int32:
+                    return @int;
+                case UnionValueType.UInt32:
+                    return @uint;
+                case UnionValueType.Int64:
+                    return @long;
+                case UnionValueType.UInt64:
+                    return @ulong;
+                case UnionValueType.Single:
+                    return @float;
+                case UnionValueType.Double:
+                    return @double;
+                case UnionValueType.Decimal:
+                    return @decimal;
+                case UnionValueType.DateTime:
+                    return dateTime;
+                case UnionValueType.String:
+                    return String;
+                case UnionValueType.TimeSpan:
+                    return timeSpan;
+                case UnionValueType.IntPtr:
+                    return intPtr;
+                case UnionValueType.Guid:
+                    return guid;
+                default:
+                    throw new NotSupportedException(UnionValueType.ToString());
+            }
+        }
+
+        public TypeCode GetTypeCode()
+        {
+            return TypeCode;
+        }
+
+        public bool ToBoolean(IFormatProvider? provider)
+        {
+            if (unionValueType== UnionValueType.Boolean)
+            {
+                return Boolean;
+            }
+            return Convert.ToBoolean(Box(), provider);
+        }
+
+        public byte ToByte(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.Byte)
+            {
+                return Byte;
+            }
+            return Convert.ToByte(Box(), provider);
+        }
+
+        public char ToChar(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.Char)
+            {
+                return @char;
+            }
+            return Convert.ToChar(Box(), provider);
+        }
+
+        public DateTime ToDateTime(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.DateTime)
+            {
+                return dateTime;
+            }
+            return Convert.ToDateTime(Box(), provider);
+        }
+
+        public decimal ToDecimal(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.Decimal)
+            {
+                return @decimal;
+            }
+            return Convert.ToDecimal(Box(), provider);
+        }
+
+        public double ToDouble(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.Double)
+            {
+                return @double;
+            }
+            return Convert.ToDouble(Box(), provider);
+        }
+
+        public short ToInt16(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.Int16)
+            {
+                return @short;
+            }
+            return Convert.ToInt16(Box(), provider);
+        }
+
+        public int ToInt32(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.Int32)
+            {
+                return @int;
+            }
+            return Convert.ToInt32(Box(), provider);
+        }
+
+        public long ToInt64(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.Int64)
+            {
+                return @long;
+            }
+            return Convert.ToInt64(Box(), provider);
+        }
+
+        public sbyte ToSByte(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.SByte)
+            {
+                return @sbyte;
+            }
+            return Convert.ToSByte(Box(), provider);
+        }
+
+        public float ToSingle(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.Single)
+            {
+                return @float;
+            }
+            return Convert.ToSingle(Box(), provider);
+        }
+
+        public string ToString(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.String)
+            {
+                return String ?? string.Empty;
+            }
+            return Convert.ToString(Box(), provider) ?? string.Empty;
+        }
+
+        public object? ToType(Type conversionType, IFormatProvider? provider)
+        {
+            return Convert.ChangeType(Box(),conversionType, provider);
+        }
+
+        public ushort ToUInt16(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.UInt16)
+            {
+                return @ushort;
+            }
+            return Convert.ToUInt16(Box(), provider);
+        }
+
+        public uint ToUInt32(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.UInt32)
+            {
+                return @uint;
+            }
+            return Convert.ToUInt32(Box(), provider);
+        }
+
+        public ulong ToUInt64(IFormatProvider? provider)
+        {
+            if (unionValueType == UnionValueType.UInt64)
+            {
+                return @ulong;
+            }
+            return Convert.ToUInt64(Box(), provider);
+        }
+
+        public string ToString(string? format, IFormatProvider? formatProvider)
+        {
+            var b = Box();
+            if ( b is IFormattable formattable)
+            {
+                return formattable.ToString(format, formatProvider);
+            }
+            throw new NotSupportedException("Must implement IFormattable");
         }
     }
 }
