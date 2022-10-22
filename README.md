@@ -1,3 +1,11 @@
+<center><h1>UnionType</h1></center>
+<center>
+
+[![.NET Build](https://github.com/Cricle/UnionType/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Cricle/UnionType/actions/workflows/dotnet.yml)
+[![codecov](https://codecov.io/gh/Cricle/UnionType/branch/main/graph/badge.svg?token=kIuE6hSsO3)](https://codecov.io/gh/Cricle/UnionType)
+
+</center>
+
 # What is this
 
 It provide an union type struct, for strongly typed c# language.

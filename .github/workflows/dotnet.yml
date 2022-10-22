@@ -12,17 +12,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        project: [UnionType.sln]
+        os: [ubuntu-latest,windows-latest]
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x
-    - name: Install dotnet-ef
-      run: dotnet tool install --global dotnet-ef
     - name: Restore dependencies
-      run: dotnet restore ${{ matrix.project }}
+      run: dotnet restore
     - name: Build
-      run: dotnet build ${{ matrix.project }} --no-restore 
+      run: dotnet build --no-restore 
+    - name: Test
+      run: dotnet test --no-restore 
