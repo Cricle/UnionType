@@ -519,7 +519,11 @@ namespace UnionType
             other.ToBytes(rightBuffer);
             return new ReadOnlySpan<byte>(leftBuffer, Size).SequenceEqual(new ReadOnlySpan<byte>(rightBuffer, Size));
         }
-
+        public void* ToPointer()
+        {
+            var d = this;
+            return &d;
+        }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(UnionValue left, UnionValue right)
         {
@@ -626,8 +630,6 @@ namespace UnionType
         {
             return new UnionValue { IntPtr = val };
         }
-
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Guid(UnionValue val)
         {
