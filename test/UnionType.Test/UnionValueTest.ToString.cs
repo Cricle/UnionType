@@ -67,5 +67,18 @@ namespace UnionType.Test
             var ptr = 123.33m;
             Assert.AreEqual(ptr.ToString(), new UnionValue { Decimal = ptr }.ToString());
         }
+        [TestMethod]
+        public void ToString_Guid()
+        {
+            var ptr = Guid.NewGuid();
+            Assert.AreEqual(ptr.ToString(), new UnionValue { Guid = ptr }.ToString());
+        }
+        [TestMethod]
+        public void ToString_Object()
+        {
+            var ptr = "456";
+            Assert.AreEqual(ptr.ToString(), new UnionValue { Object = ptr }.ToString());
+            Assert.AreEqual(ptr, new UnionValue { Object = ptr }.Object);
+        }
     }
 }

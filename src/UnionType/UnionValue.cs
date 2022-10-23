@@ -257,6 +257,13 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => typeName = value;
         }
+        public object? Object
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetObject();
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set => SetObject(value);
+        }
         public Type? TypeNameType
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -433,7 +440,7 @@ namespace UnionType
                 case UnionValueType.Empty:
                     return "(null)";
                 case UnionValueType.Object:
-                    return intPtr.ToString("X");
+                    return GetObject()?.ToString();
                 case UnionValueType.DBNull:
                     return DBNull.Value.ToString();
                 case UnionValueType.DateTime:

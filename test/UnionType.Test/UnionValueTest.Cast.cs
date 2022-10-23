@@ -171,6 +171,7 @@ namespace UnionType.Test
             a = b;
             Assert.AreEqual(DBNull.Value, a);
         }
+        [TestMethod]
         public void Cast_Guid()
         {
             var a = Guid.NewGuid();
