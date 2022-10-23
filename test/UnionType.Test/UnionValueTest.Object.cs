@@ -46,5 +46,19 @@ namespace UnionType.Test
             Assert.AreEqual(a.GetType().AssemblyQualifiedName, val.TypeNameString);
             Assert.AreEqual(a.GetType(), val.TypeNameType);
         }
+        [TestMethod]
+        public void TypeNameIntPtrFree()
+        {
+            var a = new B { Name = "123" };
+            var val = new UnionValue();
+            for (int i = 0; i < 2; i++)
+            {
+                val.SetObject(a);
+                var back = val.GetObject<B>();
+                Assert.AreEqual(a.Name, back.Name);
+                Assert.AreEqual(a.GetType().AssemblyQualifiedName, val.TypeNameString);
+                Assert.AreEqual(a.GetType(), val.TypeNameType);
+            }
+        }
     }
 }

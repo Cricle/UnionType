@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace UnionType
 {
     [Serializable]
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Pack = 8)]
     public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable
     {
         public static readonly int Size = sizeof(UnionValue);
@@ -230,7 +230,7 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                if (@intPtr!=IntPtr.Zero)
+                if (@intPtr != IntPtr.Zero)
                 {
                     GCHandle.FromIntPtr(@intPtr).Free();
                 }
@@ -243,7 +243,7 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => unionValueType;
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set=> unionValueType = value;
+            set => unionValueType = value;
         }
         public TypeCode TypeCode
         {
@@ -296,11 +296,11 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                if (typeName!=IntPtr.Zero)
+                if (typeName != IntPtr.Zero)
                 {
                     GCHandle.FromIntPtr(typeName).Free();
                 }
-                if (value!=null)
+                if (value != null)
                 {
                     typeName = (IntPtr)GCHandle.Alloc(value);
                 }
@@ -324,7 +324,7 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                if (intPtr!=IntPtr.Zero)
+                if (intPtr != IntPtr.Zero)
                 {
                     GCHandle.FromIntPtr(intPtr).Free();
                 }
@@ -367,6 +367,13 @@ namespace UnionType
             return val;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe static UnionValue FromBytes(Span<byte> buffer)
+        {
+            var val = default(UnionValue);
+            buffer.CopyTo(val.AsSpan());
+            return val;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ToBytes()
         {
             var buffer = new byte[Size];
@@ -380,6 +387,16 @@ namespace UnionType
             {
                 ToBytes(ptr);
             }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void ToBytes(in Span<byte> buffer)
+        {
+            new ReadOnlySpan<byte>(ToPointer(), buffer.Length).CopyTo(buffer);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> AsSpan()
+        {
+            return new Span<byte>(ToPointer(), Size);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ToBytes(void* buffer)
@@ -463,7 +480,7 @@ namespace UnionType
                             ToBytes(buffer);
                             var span = new Span<byte>(buffer, Size);
 #if NETSTANDARD2_0
-                            return BitConverter.ToInt64(span.ToArray(),Size).ToString();
+                            return BitConverter.ToInt64(span.ToArray(), Size).ToString();
 #else
                             return BitConverter.ToInt64(span).ToString();
 #endif
@@ -528,8 +545,7 @@ namespace UnionType
         }
         public void* ToPointer()
         {
-            var d = this;
-            return &d;
+            return Unsafe.AsPointer(ref this);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(UnionValue left, UnionValue right)
@@ -625,7 +641,7 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator UnionValue(DBNull val)
         {
-            return new UnionValue { UnionValueType = UnionValueType.DBNull};
+            return new UnionValue { UnionValueType = UnionValueType.DBNull };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator UnionValue(string val)
@@ -812,7 +828,7 @@ namespace UnionType
 
         public bool ToBoolean(IFormatProvider? provider)
         {
-            if (unionValueType== UnionValueType.Boolean)
+            if (unionValueType == UnionValueType.Boolean)
             {
                 return Boolean;
             }
@@ -920,7 +936,7 @@ namespace UnionType
 
         public object? ToType(Type conversionType, IFormatProvider? provider)
         {
-            return Convert.ChangeType(Box(),conversionType, provider);
+            return Convert.ChangeType(Box(), conversionType, provider);
         }
 
         public ushort ToUInt16(IFormatProvider? provider)
@@ -953,7 +969,7 @@ namespace UnionType
         public string ToString(string? format, IFormatProvider? formatProvider)
         {
             var b = Box();
-            if ( b is IFormattable formattable)
+            if (b is IFormattable formattable)
             {
                 return formattable.ToString(format, formatProvider);
             }

@@ -18,5 +18,13 @@ namespace UnionType.Test
             var back = BitConverter.ToInt32(bs.ToBytes());
             Assert.AreEqual(a, back);
         }
+        [TestMethod]
+        public void ToBytesBySpan()
+        {
+            var uv = new UnionValue { Int = 123 };
+            var buffer = new byte[sizeof(int)];
+            uv.ToBytes(buffer.AsSpan());
+            Assert.AreEqual(123, BitConverter.ToInt32(buffer));
+        }
     }
 }
