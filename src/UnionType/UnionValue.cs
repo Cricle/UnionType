@@ -716,7 +716,7 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator string?(UnionValue val)
         {
-            return val.String;
+            return val.ToString();
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator IntPtr(UnionValue val)
