@@ -1,4 +1,6 @@
-﻿namespace UnionType.Sample
+﻿using System.Runtime.InteropServices;
+
+namespace UnionType.Sample
 {
     internal class Program
     {

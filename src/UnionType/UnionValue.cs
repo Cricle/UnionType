@@ -16,7 +16,7 @@ namespace UnionType
         static UnionValue()
         {
             var n = typeof(string).AssemblyQualifiedName;
-            stringPtr = (IntPtr)GCHandle.Alloc(n);
+            stringPtr = (IntPtr)GCHandle.Alloc(n, GCHandleType.Pinned);
         }
 
         [FieldOffset(0)]
@@ -230,6 +230,10 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
+                if (@intPtr!=IntPtr.Zero)
+                {
+                    GCHandle.FromIntPtr(@intPtr).Free();
+                }
                 @intPtr = value;
                 unionValueType = UnionValueType.IntPtr;
             }
@@ -285,6 +289,10 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
+                if (typeName!=IntPtr.Zero)
+                {
+                    GCHandle.FromIntPtr(typeName).Free();
+                }
                 if (value!=null)
                 {
                     typeName = (IntPtr)GCHandle.Alloc(value);
@@ -309,6 +317,10 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
+                if (intPtr!=IntPtr.Zero)
+                {
+                    GCHandle.FromIntPtr(intPtr).Free();
+                }
                 if (value != null)
                 {
                     intPtr = (IntPtr)GCHandle.Alloc(value);
@@ -784,7 +796,6 @@ namespace UnionType
                     throw new NotSupportedException(UnionValueType.ToString());
             }
         }
-
         public TypeCode GetTypeCode()
         {
             return TypeCode;

@@ -16,20 +16,20 @@ namespace UnionType.Benchmarks.Runs
         [Benchmark(Baseline = true)]
         public void Decimal()
         {
-            var c = new List<decimal>();
+            var c = new decimal[Count];
             for (int i = 0; i < Count; i++)
             {
-                c.Add(i);
+                c[i] = i;
             }
         }
 
         [Benchmark]
         public void Union()
         {
-            var c = new List<UnionValue>();
+            var c = new UnionValue[Count];
             for (int i = 0; i < Count; i++)
             {
-                c.Add(new UnionValue { Decimal = i });
+                c[i] = new UnionValue { Decimal = i };
             }
         }
     }
