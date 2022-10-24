@@ -60,5 +60,10 @@ namespace UnionType.Test
             Assert.IsTrue(a.ToString() == d.ToString());
             Assert.IsFalse(a.ToString() == e.ToString());
         }
+        [TestMethod]
+        public void EqualsOthrerTypes()
+        {
+            Assert.IsFalse(new UnionValue().Equals(1));
+        }
     }
 }

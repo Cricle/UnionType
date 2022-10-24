@@ -60,5 +60,33 @@ namespace UnionType.Test
                 Assert.AreEqual(a.GetType(), val.TypeNameType);
             }
         }
+        [TestMethod]
+        public void Null_ReturnNulls()
+        {
+            var val = new UnionValue();
+            Assert.IsNull(val.TypeNameString);
+            Assert.IsNull(val.TypeNameType);
+        }
+        [TestMethod]
+        public void SetNull_WillZeroPtr()
+        {
+            var val = new UnionValue();
+            val.TypeNameString = null;
+            Assert.AreEqual(IntPtr.Zero, val.TypeName);
+        }
+        [TestMethod]
+        public void TypeNameVisit()
+        {
+            var val = new UnionValue();
+            val.TypeName = new IntPtr(123);
+            Assert.AreEqual(new IntPtr(123), val.TypeName);
+        }
+        [TestMethod]
+        public void SetEmptyObjectType_MustSetEmpty()
+        {
+            var val = new UnionValue();
+            val.TypeNameType = null;
+            Assert.IsNull(val.TypeNameString);
+        }
     }
 }

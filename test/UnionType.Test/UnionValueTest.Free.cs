@@ -31,5 +31,13 @@ namespace UnionType.Test
             var memEnd = GC.GetTotalMemory(true);
             Console.WriteLine($"Up memory:{(memEnd-memStart)/1024/1024.0:F5}MB");
         }
+        [TestMethod]
+        public void Free_With_String()
+        {
+            var uv = new UnionValue();
+            uv.String = "123";
+            uv.String = "456";
+            Assert.AreEqual("456", uv.String);
+        }
     }
 }
