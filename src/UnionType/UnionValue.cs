@@ -399,6 +399,11 @@ namespace UnionType
             return new Span<byte>(ToPointer(), Size);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref byte GetReference()
+        {
+            return ref MemoryMarshal.GetReference(AsSpan());
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ToBytes(void* buffer)
         {
             Unsafe.Copy(buffer, ref this);
@@ -435,10 +440,14 @@ namespace UnionType
             var buffer = stackalloc byte[Size];
             ToBytes(buffer);
             var hc = new HashCode();
+#if NET6_0_OR_GREATER
+            hc.AddBytes(new ReadOnlySpan<byte>(buffer, Size));
+#else
             for (int i = 0; i < Size; i++)
             {
                 hc.Add(*(buffer + i));
             }
+#endif
             return hc.ToHashCode();
         }
         public override bool Equals(object? obj)
@@ -480,7 +489,7 @@ namespace UnionType
                             ToBytes(buffer);
                             var span = new Span<byte>(buffer, Size);
 #if NETSTANDARD2_0
-                            return BitConverter.ToInt64(span.ToArray(), Size).ToString();
+                            return BitConverter.ToInt64(span.ToArray(), 0).ToString();
 #else
                             return BitConverter.ToInt64(span).ToString();
 #endif

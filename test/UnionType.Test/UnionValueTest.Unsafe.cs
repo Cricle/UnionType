@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,6 +33,16 @@ namespace UnionType.Test
             var ptr = uv.AsSpan();
             var back = UnionValue.FromBytes(ptr);
             Assert.IsTrue(uv.ToBytes().SequenceEqual(back.ToBytes()));
+        }
+        [TestMethod]
+        public unsafe void GetRef()
+        {
+            var uv = new UnionValue { Int = 123 };
+            var @ref = uv.GetReference();
+            var bytes = new byte[sizeof(int)];
+            var ptr = Unsafe.AsPointer(ref @ref);
+            var result = *(int*)ptr;
+            Assert.AreEqual(123, result);
         }
     }
 }
