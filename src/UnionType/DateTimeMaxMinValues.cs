@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace UnionType
 {
-    public readonly struct DateTimeMaxMinValues : ITypeMaxMinValues<DateTime>, ITypeMaxMinValues
+    public readonly struct DateTimeMaxMinValues : ITypeMaxMinValues<DateTime>, ITypeMaxMinValues, IWithinRangeable<DateTime,double>
     {
         public static readonly DateTimeMaxMinValues Value = new DateTimeMaxMinValues(DateTime.MinValue, DateTime.MaxValue);
         public static readonly NumericMaxMinValues Numeric = new NumericMaxMinValues(new BigInteger(DateTime.MinValue.Ticks), new BigInteger(DateTime.MaxValue.Ticks));
@@ -40,6 +40,22 @@ namespace UnionType
         {
             return $"{{Max:{MaxValue}, Min:{MinValue}}}";
         }
+
+        public bool IsIn(DateTime value, in ValueIsInOptions<double> options = default)
+        {
+            double left = MinValue.Ticks;
+            double right = MaxValue.Ticks;
+            if (options.Zoom != default)
+            {
+                left *= options.Zoom;
+                right *= options.Zoom;
+            }
+            var leftTime = new DateTime((long)left);
+            var rightTime = new DateTime((long)right);
+            return (options.MinNotEquals ? leftTime < value : leftTime <= value) && (options.MaxNotEquals ? rightTime > value : rightTime >= value);
+        }
+
+
         public static bool operator ==(DateTimeMaxMinValues a, DateTimeMaxMinValues b)
         {
             return a.Equals(b);

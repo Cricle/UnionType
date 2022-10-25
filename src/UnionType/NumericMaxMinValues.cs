@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace UnionType
 {
-    public readonly struct NumericMaxMinValues : ITypeMaxMinValues<BigInteger>, ITypeMaxMinValues
+    public readonly struct NumericMaxMinValues : ITypeMaxMinValues<BigInteger>, ITypeMaxMinValues, IWithinRangeable<BigInteger,BigInteger>
     {
         public static readonly NumericMaxMinValues Byte = new NumericMaxMinValues(sizeof(byte), false);
         public static readonly NumericMaxMinValues SByte = new NumericMaxMinValues(sizeof(byte), true);
@@ -61,16 +61,16 @@ namespace UnionType
             return $"{{Max:{MaxValue}, Min:{MinValue}}}";
         }
 
-        public bool IsIn(BigInteger value, BigInteger zoom = default, bool rightClose = true, bool leftClose = true)
+        public bool IsIn(BigInteger value, in ValueIsInOptions<BigInteger> options = default)
         {
             var left = MinValue;
             var right = MaxValue;
-            if (zoom != default && zoom != BigInteger.Zero)
+            if (options.Zoom != default && options.Zoom != BigInteger.Zero&& options.Zoom!= BigInteger.One)
             {
-                left *= zoom;
-                right *= zoom;
+                left *= options.Zoom;
+                right *= options.Zoom;
             }
-            return (leftClose ? left <= value : left < value) && (rightClose ? right >= value : right > value);
+            return (options.MinNotEquals ? left < value : left <= value) && (options.MaxNotEquals ? right > value : right >= value);
         }
 
         public static bool operator ==(NumericMaxMinValues a, NumericMaxMinValues b)

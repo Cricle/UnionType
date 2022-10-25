@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace UnionType
 {
-    public readonly struct DoubleMaxMinValues : ITypeMaxMinValues<double>, ITypeMaxMinValues
+    public readonly struct DoubleMaxMinValues : ITypeMaxMinValues<double>, ITypeMaxMinValues, IWithinRangeable<double, double>,IWithinRangeable<BigInteger,BigInteger>
     {
         public static readonly DoubleMaxMinValues Value = new DoubleMaxMinValues(double.MinValue, double.MaxValue);
         public static readonly NumericMaxMinValues Numeric = new NumericMaxMinValues(new BigInteger(double.MinValue), new BigInteger(double.MaxValue));
@@ -35,6 +35,30 @@ namespace UnionType
             }
             return false;
         }
+        public bool IsIn(double value, in ValueIsInOptions<double> options = default)
+        {
+            var left = MinValue;
+            var right = MaxValue;
+            if (options.Zoom != default)
+            {
+                left *= options.Zoom;
+                right *= options.Zoom;
+            }
+            return (options.MinNotEquals ? left < value : left <= value) && (options.MaxNotEquals ? right > value : right >= value);
+        }
+        public bool IsIn(BigInteger value, in ValueIsInOptions<BigInteger> options = default)
+        {
+            BigInteger dvalue = value;
+            BigInteger left = new BigInteger(MinValue);
+            BigInteger right = new BigInteger(MaxValue);
+            if (options.Zoom != default)
+            {
+                left *= options.Zoom;
+                right *= options.Zoom;
+            }
+            return (options.MinNotEquals ? left < dvalue : left <= dvalue) && (options.MaxNotEquals ? right > dvalue : right >= dvalue);
+        }
+
         public override string ToString()
         {
             return $"{{Max:{MaxValue}, Min:{MinValue}}}";
