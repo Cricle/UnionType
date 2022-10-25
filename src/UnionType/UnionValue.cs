@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -988,6 +989,11 @@ namespace UnionType
         public ITypeMaxMinValues? GetMaxMinValues()
         {
             return MaxMinValueHelper.GetMaxMinValues(unionValueType);
+        }
+
+        public BigInteger ToBigInteger()
+        {
+            return new BigInteger(ToDecimal(null));
         }
     }
 }

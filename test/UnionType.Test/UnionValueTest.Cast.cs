@@ -173,5 +173,12 @@
             a = b;
             Assert.AreEqual(a, b.Guid);
         }
+        [TestMethod]
+        public void Cast_BigInteger()
+        {
+            var a = 113;
+            UnionValue b = a;
+            Assert.AreEqual(a, (int)b.ToBigInteger());
+        }
     }
 }
