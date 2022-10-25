@@ -80,6 +80,88 @@ namespace UnionType.Test
             Assert.IsFalse(NumericMaxMinValues.Long.Equals(NumericMaxMinValues.ULong));
             Assert.IsTrue(NumericMaxMinValues.Long.Equals(NumericMaxMinValues.Long));
             Assert.IsFalse(NumericMaxMinValues.Long.Equals(null));
+            Assert.IsTrue(NumericMaxMinValues.Long == NumericMaxMinValues.Long);
+            Assert.IsTrue(NumericMaxMinValues.Long != NumericMaxMinValues.ULong);
+        }
+        [TestMethod]
+        public void Numeric_Pow()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = v * 12;
+            Assert.AreEqual(v.MaxValue, byte.MaxValue * 12);
+            Assert.AreEqual(v.MinValue, byte.MinValue * 12);
+        }
+        [TestMethod]
+        public void Numeric_Div()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = v / 12;
+            Assert.AreEqual(v.MaxValue, byte.MaxValue / 12);
+            Assert.AreEqual(v.MinValue, byte.MinValue / 12);
+        }
+        [TestMethod]
+        public void Numeric_Add()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = v +12;
+            Assert.AreEqual(v.MaxValue, byte.MaxValue + 12);
+            Assert.AreEqual(v.MinValue, byte.MinValue + 12);
+        }
+        [TestMethod]
+        public void Numeric_Sub()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = v - 12;
+            Assert.AreEqual(v.MaxValue, byte.MaxValue - 12);
+            Assert.AreEqual(v.MinValue, byte.MinValue - 12);
+        }
+        [TestMethod]
+        public void Numeric_Mod()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = v % 12;
+            Assert.AreEqual(v.MaxValue, byte.MaxValue % 12);
+            Assert.AreEqual(v.MinValue, byte.MinValue % 12);
+        }
+        [TestMethod]
+        public void Numeric_Neg()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = -v;
+            Assert.AreEqual(v.MaxValue, -byte.MaxValue);
+            Assert.AreEqual(v.MinValue, -byte.MinValue);
+        }
+        [TestMethod]
+        public void Numeric_Positive()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = +v;
+            Assert.AreEqual(v.MaxValue, +byte.MaxValue);
+            Assert.AreEqual(v.MinValue, +byte.MinValue);
+        }
+        [TestMethod]
+        public void Numeric_And()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = v&12;
+            Assert.AreEqual(v.MaxValue, byte.MaxValue&12);
+            Assert.AreEqual(v.MinValue, byte.MinValue&12);
+        }
+        [TestMethod]
+        public void Numeric_Or()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = v | 12;
+            Assert.AreEqual(v.MaxValue, byte.MaxValue | 12);
+            Assert.AreEqual(v.MinValue, byte.MinValue | 12);
+        }
+        [TestMethod]
+        public void Numeric_Xor()
+        {
+            var v = NumericMaxMinValues.Byte;
+            v = v ^ 12;
+            Assert.AreEqual(v.MaxValue, byte.MaxValue ^ 12);
+            Assert.AreEqual(v.MinValue, byte.MinValue ^ 12);
         }
     }
 }

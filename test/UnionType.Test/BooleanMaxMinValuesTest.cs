@@ -33,6 +33,8 @@
             Assert.IsFalse(BooleanMaxMinValues.Value.Equals(NumericMaxMinValues.UInt));
             Assert.IsTrue(BooleanMaxMinValues.Value.Equals(BooleanMaxMinValues.Value));
             Assert.IsFalse(BooleanMaxMinValues.Value.Equals(null));
+            Assert.IsTrue(BooleanMaxMinValues.Value == BooleanMaxMinValues.Value);
+            Assert.IsFalse(BooleanMaxMinValues.Value != BooleanMaxMinValues.Value);
         }
     }
 }

@@ -26,6 +26,8 @@
             Assert.IsFalse(DateTimeMaxMinValues.Value.Equals(NumericMaxMinValues.UInt));
             Assert.IsTrue(DateTimeMaxMinValues.Value.Equals(DateTimeMaxMinValues.Value));
             Assert.IsFalse(DateTimeMaxMinValues.Value.Equals(null));
+            Assert.IsTrue(DateTimeMaxMinValues.Value == DateTimeMaxMinValues.Value);
+            Assert.IsFalse(DateTimeMaxMinValues.Value != DateTimeMaxMinValues.Value);
         }
     }
 }

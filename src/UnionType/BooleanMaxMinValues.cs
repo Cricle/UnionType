@@ -5,7 +5,7 @@
         public static readonly BooleanMaxMinValues Value = new BooleanMaxMinValues(false, true);
         public static readonly NumericMaxMinValues Numeric = new NumericMaxMinValues(0, 1);
 
-        internal BooleanMaxMinValues(bool minValue, bool maxValue)
+        public BooleanMaxMinValues(bool minValue, bool maxValue)
         {
             MinValue = minValue;
             MaxValue = maxValue;
@@ -36,6 +36,14 @@
         public override string ToString()
         {
             return $"{{Max:{MaxValue}, Min:{MinValue}}}";
+        }
+        public static bool operator ==(BooleanMaxMinValues a, BooleanMaxMinValues b)
+        {
+            return a.Equals(b);
+        }
+        public static bool operator !=(BooleanMaxMinValues a, BooleanMaxMinValues b)
+        {
+            return !a.Equals(b);
         }
     }
 }

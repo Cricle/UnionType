@@ -39,6 +39,8 @@ namespace UnionType.Test
             Assert.IsFalse(FloatMaxMinValues.Value.Equals(NumericMaxMinValues.UInt));
             Assert.IsTrue(FloatMaxMinValues.Value.Equals(FloatMaxMinValues.Value));
             Assert.IsFalse(FloatMaxMinValues.Value.Equals(null));
+            Assert.IsTrue(FloatMaxMinValues.Value == FloatMaxMinValues.Value);
+            Assert.IsFalse(FloatMaxMinValues.Value != FloatMaxMinValues.Value);
         }
     }
 }

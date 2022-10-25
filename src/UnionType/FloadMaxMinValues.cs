@@ -7,7 +7,7 @@ namespace UnionType
         public static readonly FloatMaxMinValues Value = new FloatMaxMinValues(float.MinValue, float.MaxValue);
         public static readonly NumericMaxMinValues Numeric = new NumericMaxMinValues(new BigInteger(float.MinValue), new BigInteger(float.MaxValue));
 
-        internal FloatMaxMinValues(float minValue, float maxValue)
+        public FloatMaxMinValues(float minValue, float maxValue)
         {
             MinValue = minValue;
             MaxValue = maxValue;
@@ -38,6 +38,14 @@ namespace UnionType
         public override string ToString()
         {
             return $"{{Max:{MaxValue}, Min:{MinValue}}}";
+        }
+        public static bool operator ==(FloatMaxMinValues a, FloatMaxMinValues b)
+        {
+            return a.Equals(b);
+        }
+        public static bool operator !=(FloatMaxMinValues a, FloatMaxMinValues b)
+        {
+            return !a.Equals(b);
         }
     }
 }

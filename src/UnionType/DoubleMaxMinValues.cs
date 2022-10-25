@@ -7,7 +7,7 @@ namespace UnionType
         public static readonly DoubleMaxMinValues Value = new DoubleMaxMinValues(double.MinValue, double.MaxValue);
         public static readonly NumericMaxMinValues Numeric = new NumericMaxMinValues(new BigInteger(double.MinValue), new BigInteger(double.MaxValue));
 
-        internal DoubleMaxMinValues(double minValue, double maxValue)
+        public DoubleMaxMinValues(double minValue, double maxValue)
         {
             MinValue = minValue;
             MaxValue = maxValue;
@@ -37,6 +37,14 @@ namespace UnionType
         public override string ToString()
         {
             return $"{{Max:{MaxValue}, Min:{MinValue}}}";
+        }
+        public static bool operator ==(DoubleMaxMinValues a, DoubleMaxMinValues b)
+        {
+            return a.Equals(b);
+        }
+        public static bool operator !=(DoubleMaxMinValues a, DoubleMaxMinValues b)
+        {
+            return !a.Equals(b);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace UnionType
         public static readonly DateTimeMaxMinValues Value = new DateTimeMaxMinValues(DateTime.MinValue, DateTime.MaxValue);
         public static readonly NumericMaxMinValues Numeric = new NumericMaxMinValues(new BigInteger(DateTime.MinValue.Ticks), new BigInteger(DateTime.MaxValue.Ticks));
 
-        internal DateTimeMaxMinValues(DateTime minValue, DateTime maxValue)
+        public DateTimeMaxMinValues(DateTime minValue, DateTime maxValue)
         {
             MinValue = minValue;
             MaxValue = maxValue;
@@ -39,6 +39,14 @@ namespace UnionType
         public override string ToString()
         {
             return $"{{Max:{MaxValue}, Min:{MinValue}}}";
+        }
+        public static bool operator ==(DateTimeMaxMinValues a, DateTimeMaxMinValues b)
+        {
+            return a.Equals(b);
+        }
+        public static bool operator !=(DateTimeMaxMinValues a, DateTimeMaxMinValues b)
+        {
+            return !a.Equals(b);
         }
     }
 }

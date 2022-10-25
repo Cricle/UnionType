@@ -33,6 +33,8 @@
             Assert.IsFalse(DecimalMaxMinValues.Value.Equals(NumericMaxMinValues.UInt));
             Assert.IsTrue(DecimalMaxMinValues.Value.Equals(DecimalMaxMinValues.Value));
             Assert.IsFalse(DecimalMaxMinValues.Value.Equals(null));
+            Assert.IsTrue(DecimalMaxMinValues.Value == DecimalMaxMinValues.Value);
+            Assert.IsFalse(DecimalMaxMinValues.Value != DecimalMaxMinValues.Value);
         }
     }
 }
