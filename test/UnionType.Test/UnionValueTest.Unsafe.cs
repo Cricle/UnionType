@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 
 namespace UnionType.Test
 {
@@ -14,7 +8,7 @@ namespace UnionType.Test
         public unsafe void ToPointer()
         {
             var uv = new UnionValue { Int = 123 };
-            var ptr= uv.ToPointer();
+            var ptr = uv.ToPointer();
             var @int = *(int*)ptr;
             Assert.AreEqual(123, @int);
         }

@@ -1,10 +1,8 @@
-﻿using System.Runtime.InteropServices;
-
-namespace UnionType.Sample
+﻿namespace UnionType.Sample
 {
     internal class Program
     {
-        unsafe static void Main(string[] args)
+        static unsafe void Main(string[] args)
         {
             var num = new NumericMaxMinValues(sizeof(int), true);
             Console.WriteLine($"Min:{int.MinValue}  vs  {num.MinValue}");
@@ -43,9 +41,9 @@ namespace UnionType.Sample
             Console.WriteLine("Can store instance:");
             Console.WriteLine("Origan hash:" + stu.GetHashCode());
             Console.WriteLine("Back hash  :" + stuBack.GetHashCode());
-            
+
             Console.WriteLine();
-            
+
             var bs = BitConverter.GetBytes(123.123d);
             var bsUv = UnionValue.FromBytes(bs);
             bsUv.UnionValueType = UnionValueType.Double;

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     public partial class UnionValueTest
     {
@@ -167,7 +160,7 @@ namespace UnionType.Test
         {
             DBNull a = DBNull.Value;
             UnionValue b = a;
-            Assert.AreEqual( UnionValueType.DBNull, b.UnionValueType);
+            Assert.AreEqual(UnionValueType.DBNull, b.UnionValueType);
             a = b;
             Assert.AreEqual(DBNull.Value, a);
         }

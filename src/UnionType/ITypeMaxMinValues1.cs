@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace UnionType
+﻿namespace UnionType
 {
     public interface ITypeMaxMinValues<T>
     {

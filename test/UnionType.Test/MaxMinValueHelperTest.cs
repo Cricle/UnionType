@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     [TestClass]
     public class MaxMinValueHelperTest
@@ -30,7 +24,7 @@ namespace UnionType.Test
         [DataRow(UnionValueType.Decimal, typeof(DecimalMaxMinValues))]
         [DataRow(UnionValueType.DateTime, typeof(DateTimeMaxMinValues))]
         [DataRow(UnionValueType.TimeSpan, typeof(TimeSpanMaxMinValues))]
-        public void Get(UnionValueType type,Type actualType)
+        public void Get(UnionValueType type, Type actualType)
         {
             Assert.IsInstanceOfType(MaxMinValueHelper.GetMaxMinValues(type), actualType);
         }

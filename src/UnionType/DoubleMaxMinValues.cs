@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace UnionType
 {
@@ -23,7 +24,7 @@ namespace UnionType
         object? ITypeMaxMinValues<object>.MaxValue => MaxValue;
         public override int GetHashCode()
         {
-            return MinValue.GetHashCode() ^ MaxValue.GetHashCode();
+            return HashCode.Combine(MaxValue, MinValue);
         }
         public override bool Equals(object? obj)
         {

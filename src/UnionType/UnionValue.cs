@@ -359,7 +359,7 @@ namespace UnionType
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static UnionValue FromBytes(byte[] buffer)
+        public static unsafe UnionValue FromBytes(byte[] buffer)
         {
             var val = default(UnionValue);
             fixed (byte* ptr = buffer)
@@ -367,7 +367,7 @@ namespace UnionType
             return val;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static UnionValue FromBytes(Span<byte> buffer)
+        public static unsafe UnionValue FromBytes(Span<byte> buffer)
         {
             var val = default(UnionValue);
             buffer.CopyTo(val.AsSpan());
@@ -983,6 +983,11 @@ namespace UnionType
                 return formattable.ToString(format, formatProvider);
             }
             throw new NotSupportedException("Must implement IFormattable");
+        }
+
+        public ITypeMaxMinValues? GetMaxMinValues()
+        {
+            return MaxMinValueHelper.GetMaxMinValues(unionValueType);
         }
     }
 }

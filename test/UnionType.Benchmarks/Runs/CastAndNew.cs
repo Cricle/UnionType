@@ -1,17 +1,11 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UnionType.Benchmarks.Runs
 {
     [MemoryDiagnoser]
     public class CastAndNew
     {
-        private decimal value = 123;
+        private readonly decimal value = 123;
         [Params(100, 1_000_000)]
         public int Count { get; set; }
 

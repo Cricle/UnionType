@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 namespace UnionType
@@ -20,7 +19,6 @@ namespace UnionType
 
         public BigInteger MaxValue { get; }
 
-
         object? ITypeMaxMinValues<object>.MinValue => MinValue;
 
         object? ITypeMaxMinValues<object>.MaxValue => MaxValue;
@@ -37,7 +35,6 @@ namespace UnionType
                 MinValue = -new BigInteger(Math.Pow(2, size));
             }
             MaxValue = new BigInteger(Math.Pow(2, size)) - 1;
-
         }
 
         public NumericMaxMinValues(BigInteger minValue, BigInteger maxValue)
@@ -47,7 +44,7 @@ namespace UnionType
         }
         public override int GetHashCode()
         {
-            return MinValue.GetHashCode() ^ MaxValue.GetHashCode();
+            return HashCode.Combine(MaxValue, MinValue);
         }
         public override bool Equals(object? obj)
         {
@@ -64,6 +61,18 @@ namespace UnionType
             return $"{{Max:{MaxValue}, Min:{MinValue}}}";
         }
 
+        public bool IsIn(BigInteger value, BigInteger zoom = default, bool rightClose = true, bool leftClose = true)
+        {
+            var left = MinValue;
+            var right = MaxValue;
+            if (zoom != default && zoom != BigInteger.Zero)
+            {
+                left *= zoom;
+                right *= zoom;
+            }
+            return (leftClose ? left <= value : left < value) && (rightClose ? right >= value : right > value);
+        }
+
         public static bool operator ==(NumericMaxMinValues a, NumericMaxMinValues b)
         {
             return a.Equals(b);
@@ -75,19 +84,19 @@ namespace UnionType
 
         public static NumericMaxMinValues operator *(NumericMaxMinValues a, BigInteger b)
         {
-            return new NumericMaxMinValues(a.MinValue*b, a.MaxValue*b);
+            return new NumericMaxMinValues(a.MinValue * b, a.MaxValue * b);
         }
         public static NumericMaxMinValues operator /(NumericMaxMinValues a, BigInteger b)
         {
-            return new NumericMaxMinValues(a.MinValue/b,a.MaxValue/b);
+            return new NumericMaxMinValues(a.MinValue / b, a.MaxValue / b);
         }
         public static NumericMaxMinValues operator +(NumericMaxMinValues a, BigInteger b)
         {
-            return new NumericMaxMinValues(a.MinValue+b, a.MaxValue + b);
+            return new NumericMaxMinValues(a.MinValue + b, a.MaxValue + b);
         }
         public static NumericMaxMinValues operator -(NumericMaxMinValues a, BigInteger b)
         {
-            return new NumericMaxMinValues(a.MinValue-b, a.MaxValue-b);
+            return new NumericMaxMinValues(a.MinValue - b, a.MaxValue - b);
         }
         public static NumericMaxMinValues operator %(NumericMaxMinValues a, BigInteger b)
         {

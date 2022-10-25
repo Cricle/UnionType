@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     public partial class UnionValueTest
     {
@@ -17,13 +11,13 @@ namespace UnionType.Test
         public void ToString_IntPtr()
         {
             var ptr = new IntPtr(123);
-            Assert.AreEqual(ptr.ToString("X"), new UnionValue { IntPtr= ptr }.ToString());
+            Assert.AreEqual(ptr.ToString("X"), new UnionValue { IntPtr = ptr }.ToString());
         }
         [TestMethod]
         public void ToString_DbNull()
         {
             var ptr = DBNull.Value;
-            Assert.AreEqual(ptr.ToString(), new UnionValue { UnionValueType= UnionValueType.DBNull}.ToString());
+            Assert.AreEqual(ptr.ToString(), new UnionValue { UnionValueType = UnionValueType.DBNull }.ToString());
         }
         [TestMethod]
         public void ToString_DateTime()
@@ -46,7 +40,7 @@ namespace UnionType.Test
         [TestMethod]
         public void ToString_Char()
         {
-            var ptr ='a';
+            var ptr = 'a';
             Assert.AreEqual(ptr.ToString(), new UnionValue { Char = ptr }.ToString());
         }
         [TestMethod]
