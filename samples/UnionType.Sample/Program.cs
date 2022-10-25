@@ -6,6 +6,9 @@ namespace UnionType.Sample
     {
         unsafe static void Main(string[] args)
         {
+            var num = new NumericMaxMinValues(sizeof(int), true);
+            Console.WriteLine($"Min:{int.MinValue}  vs  {num.MinValue}");
+            Console.WriteLine($"Max:{int.MaxValue}  vs  {num.MaxValue}");
             Console.WriteLine("Decimal size:" + sizeof(decimal));
             Console.WriteLine("UnionValue size:" + sizeof(UnionValue));
 
