@@ -70,5 +70,16 @@ namespace UnionType.Test
             Assert.AreEqual((ulong)ulong.MaxValue, (ulong)NumericMaxMinValues.ULong.MaxValue);
             Assert.AreEqual((ulong)ulong.MinValue, (ulong)NumericMaxMinValues.ULong.MinValue);
         }
+        [TestMethod]
+        public void EqualsHashCodeString()
+        {
+            Assert.AreEqual(NumericMaxMinValues.ULong.GetHashCode(), NumericMaxMinValues.ULong.GetHashCode());
+            Assert.AreNotEqual(NumericMaxMinValues.Long.GetHashCode(), NumericMaxMinValues.ULong.GetHashCode());
+            Assert.AreEqual(NumericMaxMinValues.Long.ToString(), NumericMaxMinValues.Long.ToString());
+            Assert.AreNotEqual(NumericMaxMinValues.Long.ToString(), NumericMaxMinValues.ULong.ToString());
+            Assert.IsFalse(NumericMaxMinValues.Long.Equals(NumericMaxMinValues.ULong));
+            Assert.IsTrue(NumericMaxMinValues.Long.Equals(NumericMaxMinValues.Long));
+            Assert.IsFalse(NumericMaxMinValues.Long.Equals(null));
+        }
     }
 }

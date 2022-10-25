@@ -23,5 +23,16 @@
             Assert.AreEqual(true, (bool)v.MaxValue!);
             Assert.AreEqual(false, (bool)v.MinValue!);
         }
+        [TestMethod]
+        public void EqualsHashCodeString()
+        {
+            Assert.AreEqual(BooleanMaxMinValues.Value.GetHashCode(), BooleanMaxMinValues.Value.GetHashCode());
+            Assert.AreNotEqual(BooleanMaxMinValues.Value.GetHashCode(), NumericMaxMinValues.UInt.GetHashCode());
+            Assert.AreEqual(BooleanMaxMinValues.Value.ToString(), BooleanMaxMinValues.Value.ToString());
+            Assert.AreNotEqual(BooleanMaxMinValues.Value.ToString(), NumericMaxMinValues.UInt.ToString());
+            Assert.IsFalse(BooleanMaxMinValues.Value.Equals(NumericMaxMinValues.UInt));
+            Assert.IsTrue(BooleanMaxMinValues.Value.Equals(BooleanMaxMinValues.Value));
+            Assert.IsFalse(BooleanMaxMinValues.Value.Equals(null));
+        }
     }
 }

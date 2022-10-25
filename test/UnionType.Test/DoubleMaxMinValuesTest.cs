@@ -29,5 +29,16 @@ namespace UnionType.Test
             Assert.AreEqual(double.MaxValue, (double)v.MaxValue!);
             Assert.AreEqual(double.MinValue, (double)v.MinValue!);
         }
+        [TestMethod]
+        public void EqualsHashCodeString()
+        {
+            Assert.AreEqual(DoubleMaxMinValues.Value.GetHashCode(), DoubleMaxMinValues.Value.GetHashCode());
+            Assert.AreNotEqual(DoubleMaxMinValues.Value.GetHashCode(), NumericMaxMinValues.UInt.GetHashCode());
+            Assert.AreEqual(DoubleMaxMinValues.Value.ToString(), DoubleMaxMinValues.Value.ToString());
+            Assert.AreNotEqual(DoubleMaxMinValues.Value.ToString(), NumericMaxMinValues.UInt.ToString());
+            Assert.IsFalse(DoubleMaxMinValues.Value.Equals(NumericMaxMinValues.UInt));
+            Assert.IsTrue(DoubleMaxMinValues.Value.Equals(DoubleMaxMinValues.Value));
+            Assert.IsFalse(DoubleMaxMinValues.Value.Equals(null));
+        }
     }
 }

@@ -23,5 +23,16 @@
             Assert.AreEqual(decimal.MaxValue, (decimal)v.MaxValue!);
             Assert.AreEqual(decimal.MinValue, (decimal)v.MinValue!);
         }
+        [TestMethod]
+        public void EqualsHashCodeString()
+        {
+            Assert.AreEqual(DecimalMaxMinValues.Value.GetHashCode(), DecimalMaxMinValues.Value.GetHashCode());
+            Assert.AreNotEqual(DecimalMaxMinValues.Value.GetHashCode(), NumericMaxMinValues.UInt.GetHashCode());
+            Assert.AreEqual(DecimalMaxMinValues.Value.ToString(), DecimalMaxMinValues.Value.ToString());
+            Assert.AreNotEqual(DecimalMaxMinValues.Value.ToString(), NumericMaxMinValues.UInt.ToString());
+            Assert.IsFalse(DecimalMaxMinValues.Value.Equals(NumericMaxMinValues.UInt));
+            Assert.IsTrue(DecimalMaxMinValues.Value.Equals(DecimalMaxMinValues.Value));
+            Assert.IsFalse(DecimalMaxMinValues.Value.Equals(null));
+        }
     }
 }

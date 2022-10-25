@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 namespace UnionType
@@ -43,7 +44,24 @@ namespace UnionType
         {
             MinValue = minValue;
             MaxValue = maxValue;
-
+        }
+        public override int GetHashCode()
+        {
+            return MinValue.GetHashCode() ^ MaxValue.GetHashCode();
+        }
+        public override bool Equals(object? obj)
+        {
+            if (obj is null)
+            {
+                return false;
+            }
+            var val = (NumericMaxMinValues)obj;
+            return val.MaxValue == MaxValue &&
+                val.MinValue == MinValue;
+        }
+        public override string ToString()
+        {
+            return $"{{Max:{MaxValue}, Min:{MinValue}}}";
         }
     }
 }
