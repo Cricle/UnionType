@@ -1,4 +1,6 @@
-﻿namespace UnionType.Test
+﻿using System.Numerics;
+
+namespace UnionType.Test
 {
     [TestClass]
     public class FloatMaxMinValuesTest
@@ -35,6 +37,51 @@
             Assert.IsFalse(FloatMaxMinValues.Value.Equals(null));
             Assert.IsTrue(FloatMaxMinValues.Value == FloatMaxMinValues.Value);
             Assert.IsFalse(FloatMaxMinValues.Value != FloatMaxMinValues.Value);
+        }
+        [TestMethod]
+        public void Float_IsIn()
+        {
+            var v = new FloatMaxMinValues(10, 100);
+            Assert.IsTrue(v.IsIn(10f));
+            Assert.IsFalse(v.IsIn(101f));
+        }
+        [TestMethod]
+        public void Float_IsIn_Zoom()
+        {
+            var v = new FloatMaxMinValues(10, 100);
+            Assert.IsTrue(v.IsIn(10 * 12, new ValueIsInOptions<double> { Zoom = 12 }));
+            Assert.IsTrue(v.IsIn(100 * 12, new ValueIsInOptions<double> { Zoom = 12 }));
+            Assert.IsTrue(v.IsIn(55 * 12, new ValueIsInOptions<double> { Zoom = 12 }));
+            Assert.IsFalse(v.IsIn(10 * 12 - 1, new ValueIsInOptions<double> { Zoom = 12 }));
+        }
+        [TestMethod]
+        public void Float_IsIn_Close()
+        {
+            var v = new FloatMaxMinValues(10, 100);
+            Assert.IsTrue(v.IsIn(10, new ValueIsInOptions<double> { MinNotEquals = false }));
+            Assert.IsFalse(v.IsIn(10, new ValueIsInOptions<double> { MinNotEquals = true }));
+
+            Assert.IsTrue(v.IsIn(100, new ValueIsInOptions<double> { MaxNotEquals = false }));
+            Assert.IsFalse(v.IsIn(100, new ValueIsInOptions<double> { MaxNotEquals = true }));
+        }
+        [TestMethod]
+        public void Float_BigInt_IsIn_Zoom()
+        {
+            var v = new FloatMaxMinValues(10, 100);
+            Assert.IsTrue(v.IsIn(10 * 12, new ValueIsInOptions<BigInteger> { Zoom = 12 }));
+            Assert.IsTrue(v.IsIn(100 * 12, new ValueIsInOptions<BigInteger> { Zoom = 12 }));
+            Assert.IsTrue(v.IsIn(55 * 12, new ValueIsInOptions<BigInteger> { Zoom = 12 }));
+            Assert.IsFalse(v.IsIn(10 * 12 - 1, new ValueIsInOptions<BigInteger> { Zoom = 12 }));
+        }
+        [TestMethod]
+        public void Float_BigInt_IsIn_Close()
+        {
+            var v = new FloatMaxMinValues(10, 100);
+            Assert.IsTrue(v.IsIn(10, new ValueIsInOptions<BigInteger> { MinNotEquals = false }));
+            Assert.IsFalse(v.IsIn(10, new ValueIsInOptions<BigInteger> { MinNotEquals = true }));
+
+            Assert.IsTrue(v.IsIn(100, new ValueIsInOptions<BigInteger> { MaxNotEquals = false }));
+            Assert.IsFalse(v.IsIn(100, new ValueIsInOptions<BigInteger> { MaxNotEquals = true }));
         }
     }
 }

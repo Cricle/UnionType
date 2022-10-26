@@ -180,5 +180,13 @@
             UnionValue b = a;
             Assert.AreEqual(a, (int)b.ToBigInteger());
         }
+        [TestMethod]
+        public void Cast_BigIntegerWithin()
+        {
+            var val = new UnionValue { Int = 33 };
+            var within = val.GetBigIntegerWithin();
+            Assert.IsNotNull(within);
+            Assert.IsTrue(within.IsIn(22));
+        }
     }
 }

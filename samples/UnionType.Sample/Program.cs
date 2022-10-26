@@ -1,4 +1,7 @@
-﻿namespace UnionType.Sample
+﻿using System.Diagnostics;
+using System.Numerics;
+
+namespace UnionType.Sample
 {
     internal class Program
     {
@@ -48,6 +51,30 @@
             var bsUv = UnionValue.FromBytes(bs);
             bsUv.UnionValueType = UnionValueType.Double;
             Console.WriteLine("Can from bytes:" + bsUv);
+
+            Console.WriteLine();
+
+            var uv = NumericMaxMinValues.Int * 1024;
+            Console.WriteLine("Range:" + uv + " is in range:" + uv.IsIn(new BigInteger(int.MaxValue) * 10 + 1));
+
+            Console.WriteLine();
+            var sw = Stopwatch.GetTimestamp();
+            var bg = new BigInteger(int.MaxValue);
+            for (int i = 0; i < 1_000_000; i++)
+            {
+                uv.IsIn(bg);
+            }
+            Console.WriteLine("Comparer:10_000_000, elsp:" + new TimeSpan(Stopwatch.GetTimestamp() - sw));
+
+            Console.WriteLine();
+            sw = Stopwatch.GetTimestamp();
+            var duvMax = (decimal)uv.MaxValue;
+            var duvMin = (decimal)uv.MinValue;
+            for (int i = 0; i < 1_000_000; i++)
+            {
+                _ = int.MaxValue >= duvMin && int.MaxValue <= duvMax;
+            }
+            Console.WriteLine("Raw Comparer:10_000_000, elsp:" + new TimeSpan(Stopwatch.GetTimestamp() - sw));
         }
     }
 

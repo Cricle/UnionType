@@ -51,20 +51,6 @@ namespace UnionType.Test
         public void Numeric_UInt()
         {
             Assert.AreEqual(uint.MaxValue, (uint)NumericMaxMinValues.UInt.MaxValue);
-
-            /* 项目“UnionType.Test (net5.0)”的未合并的更改
-            在此之前:
-                        Assert.AreEqual((uint)uint.MinValue, (uint)NumericMaxMinValues.UInt.MinValue);
-            在此之后:
-                        Assert.AreEqual(uint.MinValue, (uint)NumericMaxMinValues.UInt.MinValue);
-            */
-
-            /* 项目“UnionType.Test (net6.0)”的未合并的更改
-            在此之前:
-                        Assert.AreEqual((uint)uint.MinValue, (uint)NumericMaxMinValues.UInt.MinValue);
-            在此之后:
-                        Assert.AreEqual(uint.MinValue, (uint)NumericMaxMinValues.UInt.MinValue);
-            */
             Assert.AreEqual(uint.MinValue, (uint)NumericMaxMinValues.UInt.MinValue);
         }
         [TestMethod]
@@ -77,20 +63,6 @@ namespace UnionType.Test
         public void Numeric_ULong()
         {
             Assert.AreEqual(ulong.MaxValue, (ulong)NumericMaxMinValues.ULong.MaxValue);
-
-            /* 项目“UnionType.Test (net5.0)”的未合并的更改
-            在此之前:
-                        Assert.AreEqual((ulong)ulong.MinValue, (ulong)NumericMaxMinValues.ULong.MinValue);
-            在此之后:
-                        Assert.AreEqual(ulong.MinValue, (ulong)NumericMaxMinValues.ULong.MinValue);
-            */
-
-            /* 项目“UnionType.Test (net6.0)”的未合并的更改
-            在此之前:
-                        Assert.AreEqual((ulong)ulong.MinValue, (ulong)NumericMaxMinValues.ULong.MinValue);
-            在此之后:
-                        Assert.AreEqual(ulong.MinValue, (ulong)NumericMaxMinValues.ULong.MinValue);
-            */
             Assert.AreEqual(ulong.MinValue, (ulong)NumericMaxMinValues.ULong.MinValue);
         }
         [TestMethod]
@@ -197,20 +169,20 @@ namespace UnionType.Test
         public void Numeric_IsIn_Zoom()
         {
             var v = NumericMaxMinValues.SByte;
-            Assert.IsTrue(v.IsIn(1, 12));
-            Assert.IsTrue(v.IsIn(sbyte.MaxValue * 12, 12));
-            Assert.IsTrue(v.IsIn(sbyte.MinValue * 12, 12));
-            Assert.IsFalse(v.IsIn(sbyte.MinValue * 12 - 1, 12));
+            Assert.IsTrue(v.IsIn(1,new ValueIsInOptions<BigInteger> { Zoom= 12 }));
+            Assert.IsTrue(v.IsIn(sbyte.MaxValue * 12, new ValueIsInOptions<BigInteger> { Zoom = 12 }));
+            Assert.IsTrue(v.IsIn(sbyte.MinValue * 12, new ValueIsInOptions<BigInteger> { Zoom = 12 }));
+            Assert.IsFalse(v.IsIn(sbyte.MinValue * 12 - 1, new ValueIsInOptions<BigInteger> { Zoom = 12 }));
         }
         [TestMethod]
         public void Numeric_IsIn_Close()
         {
             var v = NumericMaxMinValues.Byte;
-            Assert.IsTrue(v.IsIn(byte.MinValue, leftClose: true));
-            Assert.IsFalse(v.IsIn(byte.MinValue, leftClose: false));
+            Assert.IsTrue(v.IsIn(byte.MinValue, new ValueIsInOptions<BigInteger> { MinNotEquals = false }));
+            Assert.IsFalse(v.IsIn(byte.MinValue, new ValueIsInOptions<BigInteger> { MinNotEquals = true }));
 
-            Assert.IsTrue(v.IsIn(byte.MaxValue, rightClose: true));
-            Assert.IsFalse(v.IsIn(byte.MaxValue, rightClose: false));
+            Assert.IsTrue(v.IsIn(byte.MaxValue, new ValueIsInOptions<BigInteger> { MaxNotEquals = false }));
+            Assert.IsFalse(v.IsIn(byte.MaxValue, new ValueIsInOptions<BigInteger> { MaxNotEquals = true }));
         }
     }
 }

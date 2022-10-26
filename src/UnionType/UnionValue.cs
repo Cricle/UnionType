@@ -990,7 +990,11 @@ namespace UnionType
         {
             return MaxMinValueHelper.GetMaxMinValues(unionValueType);
         }
-
+        public IWithinRangeable<BigInteger,BigInteger>? GetBigIntegerWithin()
+        {
+            var val= MaxMinValueHelper.GetMaxMinValues(unionValueType);
+            return val as IWithinRangeable<BigInteger, BigInteger>;
+        }
         public BigInteger ToBigInteger()
         {
             return new BigInteger(ToDecimal(null));
