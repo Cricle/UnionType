@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     public partial class UnionValueTest
     {
@@ -14,13 +8,13 @@ namespace UnionType.Test
         [DataRow(UnionValueType.Char, (char)0)]
         [DataRow(UnionValueType.Int16, (short)0)]
         [DataRow(UnionValueType.UInt16, (ushort)0)]
-        [DataRow(UnionValueType.Int32, (int)0)]
+        [DataRow(UnionValueType.Int32, 0)]
         [DataRow(UnionValueType.UInt32, (uint)0)]
         [DataRow(UnionValueType.Int64, (long)0)]
         [DataRow(UnionValueType.UInt64, (ulong)0)]
         [DataRow(UnionValueType.Single, (float)0)]
         [DataRow(UnionValueType.Double, (double)0)]
-        public void Box_Primary(UnionValueType type,object val)
+        public void Box_Primary(UnionValueType type, object val)
         {
             var uv = new UnionValue();
             uv.UnionValueType = type;
@@ -44,25 +38,25 @@ namespace UnionType.Test
         public void Box_Guid()
         {
             var dt = Guid.NewGuid();
-            var uv = new UnionValue { Guid= dt };
+            var uv = new UnionValue { Guid = dt };
             Assert.AreEqual(uv.Box(), dt);
         }
         [TestMethod]
         public void Box_DBNull()
         {
-            var uv = new UnionValue { UnionValueType =  UnionValueType.DBNull};
+            var uv = new UnionValue { UnionValueType = UnionValueType.DBNull };
             Assert.AreEqual(uv.Box(), DBNull.Value);
         }
         [TestMethod]
         public void Box_Decimal()
         {
-            var uv = new UnionValue { Decimal = 1};
+            var uv = new UnionValue { Decimal = 1 };
             Assert.AreEqual(uv.Box(), 1m);
         }
         [TestMethod]
         public void Box_Byte()
         {
-            var uv = new UnionValue { Byte = 1};
+            var uv = new UnionValue { Byte = 1 };
             Assert.AreEqual(uv.Box(), (byte)1);
         }
         [TestMethod]
@@ -75,7 +69,7 @@ namespace UnionType.Test
         public void Box_IntPtr()
         {
             var ptr = new IntPtr(123);
-            var uv = new UnionValue { IntPtr = ptr};
+            var uv = new UnionValue { IntPtr = ptr };
             Assert.AreEqual(uv.Box(), ptr);
         }
         [TestMethod]
@@ -89,7 +83,7 @@ namespace UnionType.Test
         [TestMethod]
         public void Box_String()
         {
-            var uv = new UnionValue { String="123"};
+            var uv = new UnionValue { String = "123" };
             Assert.AreEqual(uv.Box(), "123");
         }
         [TestMethod]
@@ -97,7 +91,7 @@ namespace UnionType.Test
         {
             var uv = new UnionValue();
             uv.UnionValueType = (UnionValueType)255;
-            Assert.ThrowsException<NotSupportedException>(()=>uv.Box());
+            Assert.ThrowsException<NotSupportedException>(() => uv.Box());
         }
         class Student
         {

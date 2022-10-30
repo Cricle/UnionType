@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     public partial class UnionValueTest
     {
@@ -59,6 +53,11 @@ namespace UnionType.Test
             Assert.IsTrue(a.ToString() == c.ToString());
             Assert.IsTrue(a.ToString() == d.ToString());
             Assert.IsFalse(a.ToString() == e.ToString());
+        }
+        [TestMethod]
+        public void EqualsOthrerTypes()
+        {
+            Assert.IsFalse(new UnionValue().Equals(1));
         }
     }
 }

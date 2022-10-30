@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     public partial class UnionValueTest
     {
@@ -167,7 +160,7 @@ namespace UnionType.Test
         {
             DBNull a = DBNull.Value;
             UnionValue b = a;
-            Assert.AreEqual( UnionValueType.DBNull, b.UnionValueType);
+            Assert.AreEqual(UnionValueType.DBNull, b.UnionValueType);
             a = b;
             Assert.AreEqual(DBNull.Value, a);
         }
@@ -179,6 +172,21 @@ namespace UnionType.Test
             Assert.AreEqual(a, b.Guid);
             a = b;
             Assert.AreEqual(a, b.Guid);
+        }
+        [TestMethod]
+        public void Cast_BigInteger()
+        {
+            var a = 113;
+            UnionValue b = a;
+            Assert.AreEqual(a, (int)b.ToBigInteger());
+        }
+        [TestMethod]
+        public void Cast_BigIntegerWithin()
+        {
+            var val = new UnionValue { Int = 33 };
+            var within = val.GetBigIntegerWithin();
+            Assert.IsNotNull(within);
+            Assert.IsTrue(within.IsIn(22));
         }
     }
 }

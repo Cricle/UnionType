@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     public partial class UnionValueTest
     {
@@ -15,7 +9,7 @@ namespace UnionType.Test
             var bs = UnionValue.FromBytes(BitConverter.GetBytes(a));
             bs.UnionValueType = UnionValueType.Int32;
             Assert.AreEqual(a, bs.Int);
-            var back = BitConverter.ToInt32(bs.ToBytes());
+            var back = BitConverter.ToInt32(bs.ToBytes(), 0);
             Assert.AreEqual(a, back);
         }
         [TestMethod]
@@ -24,7 +18,7 @@ namespace UnionType.Test
             var uv = new UnionValue { Int = 123 };
             var buffer = new byte[sizeof(int)];
             uv.ToBytes(buffer.AsSpan());
-            Assert.AreEqual(123, BitConverter.ToInt32(buffer));
+            Assert.AreEqual(123, BitConverter.ToInt32(buffer, 0));
         }
     }
 }

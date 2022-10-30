@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -359,7 +360,7 @@ namespace UnionType
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static UnionValue FromBytes(byte[] buffer)
+        public static unsafe UnionValue FromBytes(byte[] buffer)
         {
             var val = default(UnionValue);
             fixed (byte* ptr = buffer)
@@ -367,7 +368,7 @@ namespace UnionType
             return val;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static UnionValue FromBytes(Span<byte> buffer)
+        public static unsafe UnionValue FromBytes(Span<byte> buffer)
         {
             var val = default(UnionValue);
             buffer.CopyTo(val.AsSpan());
@@ -397,6 +398,11 @@ namespace UnionType
         public Span<byte> AsSpan()
         {
             return new Span<byte>(ToPointer(), Size);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref byte GetReference()
+        {
+            return ref MemoryMarshal.GetReference(AsSpan());
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ToBytes(void* buffer)
@@ -435,10 +441,14 @@ namespace UnionType
             var buffer = stackalloc byte[Size];
             ToBytes(buffer);
             var hc = new HashCode();
+#if NET6_0_OR_GREATER
+            hc.AddBytes(new ReadOnlySpan<byte>(buffer, Size));
+#else
             for (int i = 0; i < Size; i++)
             {
                 hc.Add(*(buffer + i));
             }
+#endif
             return hc.ToHashCode();
         }
         public override bool Equals(object? obj)
@@ -480,7 +490,7 @@ namespace UnionType
                             ToBytes(buffer);
                             var span = new Span<byte>(buffer, Size);
 #if NETSTANDARD2_0
-                            return BitConverter.ToInt64(span.ToArray(), Size).ToString();
+                            return BitConverter.ToInt64(span.ToArray(), 0).ToString();
 #else
                             return BitConverter.ToInt64(span).ToString();
 #endif
@@ -974,6 +984,20 @@ namespace UnionType
                 return formattable.ToString(format, formatProvider);
             }
             throw new NotSupportedException("Must implement IFormattable");
+        }
+
+        public ITypeMaxMinValues? GetMaxMinValues()
+        {
+            return MaxMinValueHelper.GetMaxMinValues(unionValueType);
+        }
+        public IWithinRangeable<BigInteger,BigInteger>? GetBigIntegerWithin()
+        {
+            var val= MaxMinValueHelper.GetMaxMinValues(unionValueType);
+            return val as IWithinRangeable<BigInteger, BigInteger>;
+        }
+        public BigInteger ToBigInteger()
+        {
+            return new BigInteger(ToDecimal(null));
         }
     }
 }

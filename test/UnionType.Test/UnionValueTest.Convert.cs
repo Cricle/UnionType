@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     public partial class UnionValueTest
     {
@@ -39,7 +33,7 @@ namespace UnionType.Test
             var uv = new UnionValue { DateTime = now };
             Assert.AreEqual(now, uv.ToDateTime(null));
 
-            uv = new UnionValue { String = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff")};
+            uv = new UnionValue { String = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff") };
             Assert.AreEqual(now, uv.ToDateTime(null));
         }
         [TestMethod]
@@ -82,19 +76,19 @@ namespace UnionType.Test
         public void ToInt32()
         {
             var uv = new UnionValue { Int = 1 };
-            Assert.AreEqual((int)1, uv.ToInt32(null));
+            Assert.AreEqual(1, uv.ToInt32(null));
 
             uv = new UnionValue { String = "1" };
-            Assert.AreEqual((int)1, uv.ToInt32(null));
+            Assert.AreEqual(1, uv.ToInt32(null));
         }
         [TestMethod]
         public void ToInt64()
         {
             var uv = new UnionValue { Long = 1 };
-            Assert.AreEqual((long)1, uv.ToInt64(null));
+            Assert.AreEqual(1, uv.ToInt64(null));
 
             uv = new UnionValue { String = "1" };
-            Assert.AreEqual((long)1, uv.ToInt64(null));
+            Assert.AreEqual(1, uv.ToInt64(null));
         }
         [TestMethod]
         public void ToSByte()
@@ -109,10 +103,10 @@ namespace UnionType.Test
         public void ToSingle()
         {
             var uv = new UnionValue { Float = 1 };
-            Assert.AreEqual((float)1, uv.ToSingle(null));
+            Assert.AreEqual(1, uv.ToSingle(null));
 
             uv = new UnionValue { String = "1" };
-            Assert.AreEqual((float)1, uv.ToSingle(null));
+            Assert.AreEqual(1, uv.ToSingle(null));
         }
         [TestMethod]
         public void ToString_Uv()
@@ -153,7 +147,7 @@ namespace UnionType.Test
         [TestMethod]
         public void Formatter()
         {
-            var uv = new UnionValue { Int=123 };
+            var uv = new UnionValue { Int = 123 };
             Assert.AreEqual(123.ToString("X"), uv.ToString("X", null));
         }
         [TestMethod]

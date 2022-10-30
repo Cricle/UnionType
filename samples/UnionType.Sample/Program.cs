@@ -1,11 +1,15 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Numerics;
 
 namespace UnionType.Sample
 {
     internal class Program
     {
-        unsafe static void Main(string[] args)
+        static unsafe void Main(string[] args)
         {
+            var num = new NumericMaxMinValues(sizeof(int), true);
+            Console.WriteLine($"Min:{int.MinValue}  vs  {num.MinValue}");
+            Console.WriteLine($"Max:{int.MaxValue}  vs  {num.MaxValue}");
             Console.WriteLine("Decimal size:" + sizeof(decimal));
             Console.WriteLine("UnionValue size:" + sizeof(UnionValue));
 
@@ -40,13 +44,37 @@ namespace UnionType.Sample
             Console.WriteLine("Can store instance:");
             Console.WriteLine("Origan hash:" + stu.GetHashCode());
             Console.WriteLine("Back hash  :" + stuBack.GetHashCode());
-            
+
             Console.WriteLine();
-            
+
             var bs = BitConverter.GetBytes(123.123d);
             var bsUv = UnionValue.FromBytes(bs);
             bsUv.UnionValueType = UnionValueType.Double;
             Console.WriteLine("Can from bytes:" + bsUv);
+
+            Console.WriteLine();
+
+            var uv = NumericMaxMinValues.Int * 1024;
+            Console.WriteLine("Range:" + uv + " is in range:" + uv.IsIn(new BigInteger(int.MaxValue) * 10 + 1));
+
+            Console.WriteLine();
+            var sw = Stopwatch.GetTimestamp();
+            var bg = new BigInteger(int.MaxValue);
+            for (int i = 0; i < 1_000_000; i++)
+            {
+                uv.IsIn(bg);
+            }
+            Console.WriteLine("Comparer:10_000_000, elsp:" + new TimeSpan(Stopwatch.GetTimestamp() - sw));
+
+            Console.WriteLine();
+            sw = Stopwatch.GetTimestamp();
+            var duvMax = (decimal)uv.MaxValue;
+            var duvMin = (decimal)uv.MinValue;
+            for (int i = 0; i < 1_000_000; i++)
+            {
+                _ = int.MaxValue >= duvMin && int.MaxValue <= duvMax;
+            }
+            Console.WriteLine("Raw Comparer:10_000_000, elsp:" + new TimeSpan(Stopwatch.GetTimestamp() - sw));
         }
     }
 

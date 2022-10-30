@@ -1,11 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     [TestClass]
     public partial class UnionValueTest
@@ -19,14 +12,14 @@ namespace UnionType.Test
         [TestMethod]
         public void NewBool()
         {
-            var v = new UnionValue { Boolean=true};
+            var v = new UnionValue { Boolean = true };
             Assert.AreEqual(UnionValueType.Boolean, v.UnionValueType);
             Assert.AreEqual(true, v.Boolean);
         }
         [TestMethod]
         public void NewByte()
         {
-            var v = new UnionValue { Byte =12};
+            var v = new UnionValue { Byte = 12 };
             Assert.AreEqual(UnionValueType.Byte, v.UnionValueType);
             Assert.AreEqual((byte)12, v.Byte);
         }
@@ -63,7 +56,7 @@ namespace UnionType.Test
         {
             var v = new UnionValue { Int = 12 };
             Assert.AreEqual(UnionValueType.Int32, v.UnionValueType);
-            Assert.AreEqual((int)12, v.Int);
+            Assert.AreEqual(12, v.Int);
         }
         [TestMethod]
         public void NewUInt()
@@ -77,7 +70,7 @@ namespace UnionType.Test
         {
             var v = new UnionValue { Long = 12 };
             Assert.AreEqual(UnionValueType.Int64, v.UnionValueType);
-            Assert.AreEqual((long)12, v.Long);
+            Assert.AreEqual(12, v.Long);
         }
         [TestMethod]
         public void NewULong()
@@ -119,14 +112,14 @@ namespace UnionType.Test
         public void NewDateTime()
         {
             var now = DateTime.Now;
-            var v = new UnionValue { DateTime =  now};
+            var v = new UnionValue { DateTime = now };
             Assert.AreEqual(UnionValueType.DateTime, v.UnionValueType);
             Assert.AreEqual(now, v.DateTime);
         }
         [TestMethod]
         public void NewIntPtr()
         {
-            var intptr=new IntPtr(1011);
+            var intptr = new IntPtr(1011);
             var v = new UnionValue { IntPtr = intptr };
             Assert.AreEqual(UnionValueType.IntPtr, v.UnionValueType);
             Assert.AreEqual(intptr, v.IntPtr);
@@ -158,7 +151,7 @@ namespace UnionType.Test
         [TestMethod]
         public void TypeCode()
         {
-            var v = new UnionValue {Int=22 };
+            var v = new UnionValue { Int = 22 };
             Assert.AreEqual(UnionValueType.Int32, v.UnionValueType);
             v.SetTypeCode(System.TypeCode.Empty);
             Assert.AreEqual(UnionValueType.Empty, v.UnionValueType);
