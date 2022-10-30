@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace UnionType
 {
     [Serializable]
-    [StructLayout(LayoutKind.Explicit, Pack = 8)]
+    [StructLayout(LayoutKind.Explicit)]
     public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable
     {
         public static readonly int Size = sizeof(UnionValue);
