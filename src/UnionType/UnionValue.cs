@@ -21,43 +21,43 @@ namespace UnionType
         }
 
         [FieldOffset(0)]
-        private bool @boolean;
+        public bool @boolean;
         [FieldOffset(0)]
-        private byte @byte;
+        public byte @byte;
         [FieldOffset(0)]
-        private char @char;
+        public char @char;
         [FieldOffset(0)]
-        private sbyte @sbyte;
+        public sbyte @sbyte;
         [FieldOffset(0)]
-        private short @short;
+        public short @short;
         [FieldOffset(0)]
-        private ushort @ushort;
+        public ushort @ushort;
         [FieldOffset(0)]
-        private int @int;
+        public int @int;
         [FieldOffset(0)]
-        private uint @uint;
+        public uint @uint;
         [FieldOffset(0)]
-        private long @long;
+        public long @long;
         [FieldOffset(0)]
-        private ulong @ulong;
+        public ulong @ulong;
         [FieldOffset(0)]
-        private float @float;
+        public float @float;
         [FieldOffset(0)]
-        private double @double;
+        public double @double;
         [FieldOffset(0)]
-        private decimal @decimal;
+        public decimal @decimal;
         [FieldOffset(0)]
-        private DateTime @dateTime;
+        public DateTime @dateTime;
         [FieldOffset(0)]
-        private TimeSpan @timeSpan;
+        public TimeSpan @timeSpan;
         [FieldOffset(0)]
-        private Guid @guid;
+        public Guid @guid;
         [FieldOffset(0)]//8L
-        private IntPtr @intPtr;
+        public IntPtr @intPtr;
         [FieldOffset(8)]//8L
-        private IntPtr @typeName;
+        public IntPtr @typeName;
         [FieldOffset(16)]
-        private UnionValueType unionValueType;
+        public UnionValueType unionValueType;
 
         public Guid Guid
         {
