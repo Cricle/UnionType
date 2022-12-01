@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace UnionType
 {
     public interface IUnionValueTransformer
     {
-        object? BytesToObject(byte[] buffer, int startIndex, int count, Type type);
+        object? BytesToObject(Span<byte> buffer, Type type);
 
         byte[] ObjectToBytes(object value, Type type);
     }
@@ -52,7 +51,7 @@ namespace UnionType
                 {
                     throw new InvalidOperationException("Transformer is null");
                 }
-                val.SetObject(Transformer.BytesToObject(bytes, offset, bytes.Length - offset, type));
+                val.SetObject(Transformer.BytesToObject(bytes.AsSpan(offset), type));
             }
             return val;
         }
