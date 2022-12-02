@@ -31,11 +31,36 @@ namespace UnionType.Test
             stu.Value = new UnionValue();
             stu.Value = 123;
             uv.SetObject(stu);
-            var str = JsonSerializer.Serialize(uv, opt);
-            var obj = JsonSerializer.Deserialize<UnionValue>(str, opt);
-            var s = (Student)obj.Object;
-            Assert.AreEqual(stu.A, s.A);
-            Assert.AreEqual(stu.Value, s.Value);
+            for (int i = 0; i < 10; i++)
+            {
+                var str = JsonSerializer.Serialize(uv, opt);
+                var obj = JsonSerializer.Deserialize<UnionValue>(str, opt);
+                var s = (Student)obj.Object;
+                Assert.AreEqual(stu.A, s.A);
+                Assert.AreEqual(stu.Value, s.Value);
+            }
+        }
+        [TestMethod]
+        public void ToBytesString()
+        {
+            var opt = new JsonSerializerOptions();
+            opt.Converters.Add(new UnionValueJsonConverter(new JsonUnionValueTransformer(opt)));
+            var uv = new UnionValue();
+            var stu = new Student
+            {
+                A = 123
+            };
+            stu.Value = new UnionValue();
+            stu.Value = "aaasssddd";
+            uv.SetObject(stu);
+            for (int i = 0; i < 10; i++)
+            {
+                var str = JsonSerializer.Serialize(uv, opt);
+                var obj = JsonSerializer.Deserialize<UnionValue>(str, opt);
+                var s = (Student)obj.Object;
+                Assert.AreEqual(stu.A, s.A);
+                Assert.AreEqual(stu.Value, s.Value);
+            }
         }
         class Student
         {

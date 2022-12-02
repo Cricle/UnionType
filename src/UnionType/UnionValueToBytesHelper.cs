@@ -61,9 +61,26 @@ namespace UnionType
             ToBytes(value, list);
             return list;
         }
+
         public void ToBytes(in UnionValue value, List<byte> lists)
         {
-            lists.AddRange(value.ToBytes());
+            if (value.unionValueType== UnionValueType.String)
+            {
+                var v = new UnionValue();
+                v.String = null;
+                lists.AddRange(v.ToBytes());
+            }
+            else if(value.unionValueType== UnionValueType.Object)
+            {
+                var v = new UnionValue();
+                v.unionValueType = UnionValueType.Object;
+                v.TypeNameString = value.TypeNameString;
+                lists.AddRange(v.ToBytes());
+            }
+            else
+            {
+                lists.AddRange(value.ToBytes());
+            }
             if (value.UnionValueType == UnionValueType.String)
             {
                 var str = value.String;

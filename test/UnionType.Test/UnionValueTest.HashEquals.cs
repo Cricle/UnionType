@@ -59,5 +59,69 @@
         {
             Assert.IsFalse(new UnionValue().Equals(1));
         }
+        [TestMethod]
+        public void StringEquals()
+        {
+            var v1 = new UnionValue();
+            v1.String = "123";
+            var v2 = new UnionValue();
+            v2.String = "123";
+
+            Assert.AreEqual(v1, v2);
+
+            v2.String = "345";
+
+            Assert.AreNotEqual(v1, v2);
+        }
+        [TestMethod]
+        public void StringHashCode()
+        {
+            var v1 = new UnionValue();
+            v1.String = "123";
+
+            Assert.AreEqual(v1.String.GetHashCode(),v1.GetHashCode());
+        }
+        [TestMethod]
+        public void ObjectEquals()
+        {
+            var v1 = new UnionValue();
+            v1.SetObject(123);
+            var v2 = new UnionValue();
+            v2.SetObject(123);
+
+            Assert.AreEqual(v1, v2);
+
+            v2.SetObject(456);
+
+            Assert.AreNotEqual(v1, v2);
+        }
+        [TestMethod]
+        public void ObjectEqualsNulls()
+        {
+            var v1 = new UnionValue();
+            v1.SetObject(null);
+            var v2 = new UnionValue();
+            v2.SetObject(null);
+
+            Assert.AreEqual(v1, v2);
+        }
+        [TestMethod]
+        public void ObjectNotEqualsAnyNull()
+        {
+            var v1 = new UnionValue();
+            v1.SetObject(123);
+            var v2 = new UnionValue();
+            v2.SetObject(null);
+
+            Assert.AreNotEqual(v1, v2);
+        }
+        [TestMethod]
+        public void ObjectHashCode()
+        {
+            var v1 = new UnionValue();
+            v1.SetObject(123);
+
+            Assert.AreEqual(v1.Object.GetHashCode(), v1.GetHashCode());
+        }
     }
 }

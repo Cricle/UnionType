@@ -441,6 +441,14 @@ namespace UnionType
 
         public override int GetHashCode()
         {
+            if (unionValueType== UnionValueType.String)
+            {
+                return String?.GetHashCode() ?? 0;
+            }
+            if (unionValueType == UnionValueType.Object)
+            {
+                return Object?.GetHashCode() ?? 0;
+            }
             var buffer = stackalloc byte[Size];
             ToBytes(buffer);
             var hc = new HashCode();
@@ -550,6 +558,26 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(UnionValue other)
         {
+            if (other.unionValueType!=unionValueType)
+            {
+                return false;
+            }
+            if (unionValueType== UnionValueType.String)
+            {
+                return other.String == String;
+            }
+            else if (unionValueType== UnionValueType.Object)
+            {
+                if (other.Object==null&&Object==null)
+                {
+                    return true;
+                }
+                if (other.Object == null || Object == null)
+                {
+                    return false;
+                }
+                return other.Object.Equals(Object);
+            }
             var leftBuffer = stackalloc byte[Size];
             var rightBuffer = stackalloc byte[Size];
             ToBytes(leftBuffer);
