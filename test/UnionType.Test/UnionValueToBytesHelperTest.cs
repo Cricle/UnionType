@@ -78,9 +78,9 @@ namespace UnionType.Test
 
         public JsonSerializerOptions Options { get; }
 
-        public object? BytesToObject(Span<byte> buffer, Type type)
+        public object? BytesToObject(byte[] buffer,int startIndex,int count, Type type)
         {
-           return JsonSerializer.Deserialize(buffer, type,Options);
+           return JsonSerializer.Deserialize(buffer.AsSpan(startIndex,count), type,Options);
         }
 
         public byte[] ObjectToBytes(object value, Type type)

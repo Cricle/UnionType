@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,12 +7,21 @@ namespace UnionType
 {
     public interface IUnionValueTransformer
     {
-        object? BytesToObject(Span<byte> buffer, Type type);
+        object? BytesToObject(byte[] buffer, int startIndex, int count, Type type);
 
         byte[] ObjectToBytes(object value, Type type);
     }
     public class UnionValueToBytesHelper
     {
+        private static readonly byte[] EmptyStringBuffer;
+
+        static UnionValueToBytesHelper()
+        {
+            var v = new UnionValue();
+            v.String = null;
+            EmptyStringBuffer = v.ToBytes();
+        }
+
         public UnionValueToBytesHelper(Encoding encoding)
         {
             Encoding = encoding;
@@ -34,7 +44,7 @@ namespace UnionType
             offset += UnionValue.Size;
             if (val.UnionValueType == UnionValueType.String)
             {
-                val.String = Encoding.GetString(bytes, offset, bytes.Length-offset);
+                val.String = Encoding.GetString(bytes, offset, bytes.Length - offset);
             }
             else if (val.UnionValueType == UnionValueType.Object)
             {
@@ -51,7 +61,7 @@ namespace UnionType
                 {
                     throw new InvalidOperationException("Transformer is null");
                 }
-                val.SetObject(Transformer.BytesToObject(bytes.AsSpan(offset), type));
+                val.SetObject(Transformer.BytesToObject(bytes, offset, bytes.Length - offset, type));
             }
             return val;
         }
@@ -61,16 +71,13 @@ namespace UnionType
             ToBytes(value, list);
             return list;
         }
-
         public void ToBytes(in UnionValue value, List<byte> lists)
         {
-            if (value.unionValueType== UnionValueType.String)
+            if (value.unionValueType == UnionValueType.String)
             {
-                var v = new UnionValue();
-                v.String = null;
-                lists.AddRange(v.ToBytes());
+                lists.AddRange(EmptyStringBuffer);
             }
-            else if(value.unionValueType== UnionValueType.Object)
+            else if (value.unionValueType == UnionValueType.Object)
             {
                 var v = new UnionValue();
                 v.unionValueType = UnionValueType.Object;
