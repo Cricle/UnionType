@@ -405,7 +405,7 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref byte GetReference()
         {
-            return ref MemoryMarshal.GetReference(AsSpan());
+            return ref Unsafe.AsRef<byte>(Unsafe.AsPointer(ref this));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ToBytes(void* buffer)
