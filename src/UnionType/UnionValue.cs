@@ -371,11 +371,69 @@ namespace UnionType
             return val;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe UnionValue FromBytes(Span<byte> buffer)
+        public static unsafe UnionValue FromBytes(ReadOnlySpan<byte> buffer)
         {
             var val = default(UnionValue);
-            buffer.CopyTo(val.AsSpan());
+            buffer.CopyTo(new Span<byte>(val.ToPointer(), Size));
             return val;
+        }
+        public static unsafe UnionValue FromObject(object input)
+        {
+            if (input is TimeSpan ts)
+            {
+                return ts;
+            }
+            if (input is Guid gid)
+            {
+                return gid;
+            }
+            if (input is IntPtr ptr)
+            {
+                return ptr;
+            }
+            var typeCode = Convert.GetTypeCode(input);
+            switch (typeCode)
+            {
+                case TypeCode.Empty:
+                   return default;
+                case TypeCode.Object:
+                    return new UnionValue { Object= input };
+                case TypeCode.DBNull:
+                    return new UnionValue { UnionValueType = UnionValueType.DBNull };
+                case TypeCode.Boolean:
+                    return (bool)input;
+                case TypeCode.Char:
+                    return (char)input;
+                case TypeCode.SByte:
+                    return (sbyte)input;
+                case TypeCode.Byte:
+                    return (byte)input;
+                case TypeCode.Int16:
+                    return (short)input;
+                case TypeCode.UInt16:
+                    return (ushort)input;
+                case TypeCode.Int32:
+                    return (int)input;
+                case TypeCode.UInt32:
+                    return (uint)input;
+                case TypeCode.Int64:
+                    return (long)input;
+                case TypeCode.UInt64:
+                    return (ulong)input;
+                case TypeCode.Single:
+                    return (float)input;
+                case TypeCode.Double:
+                    return (double)input;
+                case TypeCode.Decimal:
+                    return (decimal)input;
+                case TypeCode.DateTime:
+                    return (DateTime)input;
+                case TypeCode.String:
+                    return (string)input;
+                default:
+                    break;
+            }
+            throw new NotSupportedException(input.GetType().ToString());
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ToBytes()
@@ -1030,6 +1088,7 @@ namespace UnionType
         {
             return new BigInteger(ToDecimal(null));
         }
+
     }
 
 }

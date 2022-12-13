@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace UnionType
 {
-    public interface IUnionValueTransformer
-    {
-        object? BytesToObject(byte[] buffer, int startIndex, int count, Type type);
-
-        byte[] ObjectToBytes(object value, Type type);
-    }
     public class UnionValueToBytesHelper
     {
         private static readonly byte[] EmptyStringBuffer;
