@@ -16,7 +16,7 @@ namespace UnionType.Sample
             Console.WriteLine();
 
             var a = new UnionValue { Int = 123 };
-            Console.WriteLine("Can be primary type:" + a);
+            Console.WriteLine("Can be primary type:" + a.ToString());
 
             Console.WriteLine();
 
@@ -28,7 +28,7 @@ namespace UnionType.Sample
 
             var it = 333.123;
             UnionValue itUv = it;
-            Console.WriteLine("Can implicit cast(from):" + itUv);
+            Console.WriteLine("Can implicit cast(from):" + itUv.ToString());
 
             Console.WriteLine();
 
@@ -50,7 +50,7 @@ namespace UnionType.Sample
             var bs = BitConverter.GetBytes(123.123d);
             var bsUv = UnionValue.FromBytes(bs);
             bsUv.UnionValueType = UnionValueType.Double;
-            Console.WriteLine("Can from bytes:" + bsUv);
+            Console.WriteLine("Can from bytes:" + bsUv.ToString());
 
             Console.WriteLine();
 

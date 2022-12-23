@@ -5,6 +5,11 @@ namespace UnionType.Test
     public partial class UnionValueTest
     {
         [TestMethod]
+        public unsafe void Size()
+        {
+            Assert.AreEqual(17, UnionValue.Size);
+        }
+        [TestMethod]
         public unsafe void ToPointer()
         {
             var uv = new UnionValue { Int = 123 };

@@ -50,6 +50,12 @@ namespace UnionType
         [FieldOffset(0)]
         public decimal @decimal;
         [FieldOffset(0)]
+        public int @decimal_flags;
+        [FieldOffset(4)]
+        public uint @decimal_hi32;
+        [FieldOffset(8)]
+        public ulong @decimal_lo64;
+        [FieldOffset(0)]
         public DateTime @dateTime;
         [FieldOffset(0)]
         public TimeSpan @timeSpan;
@@ -538,7 +544,7 @@ namespace UnionType
                 case UnionValueType.Object:
                     return GetObject()?.ToString();
                 case UnionValueType.DBNull:
-                    return DBNull.Value.ToString();
+                    return "DBNull";
                 case UnionValueType.DateTime:
                     return dateTime.ToString();
                 case UnionValueType.TimeSpan:
@@ -645,6 +651,78 @@ namespace UnionType
         public void* ToPointer()
         {
             return Unsafe.AsPointer(ref this);
+        }
+        public static UnionValue operator +(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) + right.ToDecimal(null);
+            }
+            return left.ToInt64(null) + right.ToInt64(null);
+        }
+        public static UnionValue operator -(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) - right.ToDecimal(null);
+            }
+            return left.ToInt64(null) - right.ToInt64(null);
+        }
+        public static UnionValue operator *(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) * right.ToDecimal(null);
+            }
+            return left.ToInt64(null) * right.ToInt64(null);
+        }
+        public static UnionValue operator /(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) / right.ToDecimal(null);
+            }
+            return left.ToInt64(null) / right.ToInt64(null);
+        }
+        public static UnionValue operator %(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) % right.ToDecimal(null);
+            }
+            return left.ToInt64(null) % right.ToInt64(null);
+        }
+        public static bool operator >(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) > right.ToDecimal(null);
+            }
+            return left.ToInt64(null) > right.ToInt64(null);
+        }
+        public static bool operator <(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) < right.ToDecimal(null);
+            }
+            return left.ToInt64(null) < right.ToInt64(null);
+        }
+        public static bool operator >=(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) >= right.ToDecimal(null);
+            }
+            return left.ToInt64(null) >= right.ToInt64(null);
+        }
+        public static bool operator <=(UnionValue left, UnionValue right)
+        {
+            if (left.IsFraction() || right.IsFraction())
+            {
+                return left.ToDecimal(null) <= right.ToDecimal(null);
+            }
+            return left.ToInt64(null) <= right.ToInt64(null);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(UnionValue left, UnionValue right)

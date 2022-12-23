@@ -17,7 +17,7 @@
         public void ToString_DbNull()
         {
             var ptr = DBNull.Value;
-            Assert.AreEqual(ptr.ToString(), new UnionValue { UnionValueType = UnionValueType.DBNull }.ToString());
+            Assert.AreEqual("DBNull", new UnionValue { UnionValueType = UnionValueType.DBNull }.ToString());
         }
         [TestMethod]
         public void ToString_DateTime()
