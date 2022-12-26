@@ -18,6 +18,14 @@ namespace UnionType.Test
             Assert.AreEqual(123, @int);
         }
         [TestMethod]
+        public unsafe void ToPointer_Unmanage()
+        {
+            var uv = new UnionValue { Int = 123 };
+            var ptr = uv.ToPointer<int>();
+            var @int = *ptr;
+            Assert.AreEqual(123, @int);
+        }
+        [TestMethod]
         public unsafe void ToPointer_Write()
         {
             var uv = new UnionValue { Int = 123 };
@@ -32,6 +40,13 @@ namespace UnionType.Test
             var ptr = uv.AsSpan();
             var back = UnionValue.FromBytes(ptr);
             Assert.IsTrue(uv.ToBytes().SequenceEqual(back.ToBytes()));
+        }
+        [TestMethod]
+        public unsafe void AsSpan_Unmanager()
+        {
+            var uv = new UnionValue { Int = 123 };
+            var ptr = uv.AsSpan<int>();
+            Assert.AreEqual(123, ptr[0]);
         }
         [TestMethod]
         public unsafe void GetRef()

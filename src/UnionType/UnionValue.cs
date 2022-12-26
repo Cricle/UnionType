@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace UnionType
 {
@@ -383,6 +381,39 @@ namespace UnionType
             buffer.CopyTo(new Span<byte>(val.ToPointer(), Size));
             return val;
         }
+        //https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Decimal.cs,79
+        private const int SignMask = unchecked((int)0x80000000);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static UnionValue FromAsDecimal(int i)
+        {
+            if (i < 0)
+            {
+                i = -i;
+                return new UnionValue { decimal_flags = SignMask, decimal_lo64 = (uint)i, unionValueType = UnionValueType.Decimal };
+            }
+            return new UnionValue { decimal_lo64 = (uint)i, unionValueType = UnionValueType.Decimal };
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static UnionValue FromAsDecimal(uint i)
+        {
+            return new UnionValue { decimal_lo64 = i, unionValueType = UnionValueType.Decimal };
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static UnionValue FromAsDecimal(long i)
+        {
+            if (i < 0)
+            {
+                i = -i;
+                return new UnionValue { decimal_flags = SignMask, decimal_lo64 = (ulong)i, unionValueType = UnionValueType.Decimal };
+            }
+            return new UnionValue { decimal_lo64 = (ulong)i, unionValueType = UnionValueType.Decimal };
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static UnionValue FromAsDecimal(ulong i)
+        {
+            return new UnionValue { decimal_lo64 = i, unionValueType = UnionValueType.Decimal };
+        }
         public static unsafe UnionValue FromObject(object input)
         {
             if (input is TimeSpan ts)
@@ -465,6 +496,12 @@ namespace UnionType
         public Span<byte> AsSpan()
         {
             return new Span<byte>(ToPointer(), Size);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<T> AsSpan<T>()
+            where T:unmanaged
+        {
+            return new Span<T>(ToPointer(), Size / sizeof(T));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref byte GetReference()
@@ -651,6 +688,11 @@ namespace UnionType
         public void* ToPointer()
         {
             return Unsafe.AsPointer(ref this);
+        }
+        public T* ToPointer<T>()
+            where T:unmanaged
+        {
+            return (T*)Unsafe.AsPointer(ref this);
         }
         public static UnionValue operator +(UnionValue left, UnionValue right)
         {
@@ -1166,7 +1208,6 @@ namespace UnionType
         {
             return new BigInteger(ToDecimal(null));
         }
-
     }
 
 }
