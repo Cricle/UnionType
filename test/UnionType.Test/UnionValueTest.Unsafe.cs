@@ -58,5 +58,13 @@ namespace UnionType.Test
             var result = *(int*)ptr;
             Assert.AreEqual(123, result);
         }
+        [TestMethod]
+        public unsafe void GetRef_Any()
+        {
+            var uv = new UnionValue { Int = 123 };
+            ref int @ref =ref uv.GetReference<int>();
+            @ref = 456;
+            Assert.AreEqual(456, uv.Int);
+        }
     }
 }

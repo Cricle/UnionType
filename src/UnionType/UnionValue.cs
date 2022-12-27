@@ -575,6 +575,11 @@ namespace UnionType
             return ref Unsafe.AsRef<byte>(Unsafe.AsPointer(ref this));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T GetReference<T>()
+        {
+            return ref Unsafe.AsRef<T>(Unsafe.AsPointer(ref this));
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ToBytes(void* buffer)
         {
             Unsafe.Copy(buffer, ref this);
