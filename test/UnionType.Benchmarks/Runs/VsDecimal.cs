@@ -44,4 +44,5 @@ namespace UnionType.Benchmarks.Runs
             }
         }
     }
+
 }

@@ -85,5 +85,11 @@ namespace UnionType.Test
             Assert.AreEqual(UnionValueType.DBNull, uv.UnionValueType);
             Assert.AreEqual(dt, uv.Box());
         }
+        [TestMethod]
+        public void FromObject_Generic()
+        {
+            var uv = UnionValue.FromObject(123);
+            Assert.AreEqual(123, uv.Box());
+        }
     }
 }

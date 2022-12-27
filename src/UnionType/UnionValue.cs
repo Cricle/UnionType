@@ -12,6 +12,8 @@ namespace UnionType
     {
         public static readonly int Size = sizeof(UnionValue);
 
+        public static UnionValue Empty => new UnionValue();
+
         private static readonly IntPtr stringPtr;
         private static readonly byte[] EmptyBytes = Array.Empty<byte>();
 
@@ -413,6 +415,11 @@ namespace UnionType
         public static UnionValue FromAsDecimal(ulong i)
         {
             return new UnionValue { decimal_lo64 = i, unionValueType = UnionValueType.Decimal };
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe UnionValue FromObject<T>(T input)
+        {
+            return UnionValueCreator<T>.Create(input);
         }
         public static unsafe UnionValue FromObject(object input)
         {

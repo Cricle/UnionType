@@ -156,5 +156,11 @@
             v.SetTypeCode(System.TypeCode.Empty);
             Assert.AreEqual(UnionValueType.Empty, v.UnionValueType);
         }
+        [TestMethod]
+        public void Empty()
+        {
+            var v = UnionValue.Empty;
+            Assert.IsTrue(v.ToBytes().All(x => x == 0));
+        }
     }
 }
