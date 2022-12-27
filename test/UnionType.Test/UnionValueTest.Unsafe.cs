@@ -7,11 +7,7 @@ namespace UnionType.Test
         [TestMethod]
         public unsafe void Size()
         {
-#if NET7_0_OR_GREATER
-            Assert.AreEqual(24, UnionValue.Size);
-#else
             Assert.AreEqual(17, UnionValue.Size);
-#endif
         }
         [TestMethod]
         public unsafe void ToPointer()

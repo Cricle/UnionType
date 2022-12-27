@@ -10,7 +10,7 @@ namespace UnionType
     [StructLayout(LayoutKind.Explicit)]
     public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable
     {
-        public static readonly int Size = sizeof(UnionValue);
+        public static readonly int Size = 17;
 
         public static UnionValue Empty => new UnionValue();
 
@@ -616,15 +616,14 @@ namespace UnionType
             {
                 return Object?.GetHashCode() ?? 0;
             }
-            var buffer = stackalloc byte[Size];
-            ToBytes(buffer);
             var hc = new HashCode();
+            var ptr = (byte*)ToPointer();
 #if NET6_0_OR_GREATER
-            hc.AddBytes(new ReadOnlySpan<byte>(buffer, Size));
+            hc.AddBytes(new ReadOnlySpan<byte>(ptr, Size));
 #else
             for (int i = 0; i < Size; i++)
             {
-                hc.Add(*(buffer + i));
+                hc.Add(*(ptr + i));
             }
 #endif
             return hc.ToHashCode();
@@ -690,6 +689,7 @@ namespace UnionType
                     }
             }
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsFraction()
         {
             switch (UnionValueType)
@@ -702,6 +702,7 @@ namespace UnionType
                     return false;
             }
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsNumeric()
         {
             switch (UnionValueType)
