@@ -60,6 +60,21 @@
             Assert.IsFalse(new UnionValue().Equals(1));
         }
         [TestMethod]
+        public void EqualsAnyNull()
+        {
+            var nullA = new UnionValue { Object = null };
+            var valueB = new UnionValue { Object = new object() };
+            Assert.IsFalse(nullA.Equals(valueB));
+            Assert.IsFalse(valueB.Equals(nullA));
+        }
+        [TestMethod]
+        public void EqualsAllNull()
+        {
+            var nullA = new UnionValue { Object = null };
+            var nullB = new UnionValue { Object =null };
+            Assert.IsTrue(nullA.Equals(nullB));
+        }
+        [TestMethod]
         public void StringEquals()
         {
             var v1 = new UnionValue();

@@ -19,7 +19,7 @@ namespace UnionType
 
         static UnionValue()
         {
-            var n = typeof(string).AssemblyQualifiedName;
+            var n = string.Intern(typeof(string).AssemblyQualifiedName!);
             stringPtr = (IntPtr)GCHandle.Alloc(n, GCHandleType.Pinned);
         }
 
@@ -312,7 +312,7 @@ namespace UnionType
                 }
                 if (value != null)
                 {
-                    typeName = (IntPtr)GCHandle.Alloc(value);
+                    typeName = (IntPtr)GCHandle.Alloc(value, GCHandleType.Weak);
                 }
                 else
                 {
@@ -340,7 +340,7 @@ namespace UnionType
                 }
                 if (value != null)
                 {
-                    intPtr = (IntPtr)GCHandle.Alloc(value);
+                    intPtr = (IntPtr)GCHandle.Alloc(value, GCHandleType.Weak);
                 }
                 else
                 {
@@ -350,6 +350,7 @@ namespace UnionType
                 @typeName = stringPtr;
             }
         }
+        
         public TimeSpan TimeSpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -417,9 +418,57 @@ namespace UnionType
             return new UnionValue { decimal_lo64 = i, unionValueType = UnionValueType.Decimal };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe UnionValue FromObject<T>(T input)
+        public static UnionValue FromObject<T>(T input)
         {
             return UnionValueCreator<T>.Create(input);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetBitsSize(UnionValueType type)
+        {
+            switch (type)
+            {
+                case UnionValueType.Empty:
+                    return 0;
+                case UnionValueType.Object:
+                case UnionValueType.String:
+                case UnionValueType.IntPtr:
+                case UnionValueType.DBNull:
+                    return IntPtr.Size;
+                case UnionValueType.Boolean:
+                    return sizeof(bool);
+                case UnionValueType.Char:
+                    return sizeof(char);
+                case UnionValueType.SByte:
+                    return sizeof(sbyte);
+                case UnionValueType.Byte:
+                    return sizeof(byte);
+                case UnionValueType.Int16:
+                    return sizeof(short);
+                case UnionValueType.UInt16:
+                    return sizeof(ushort);
+                case UnionValueType.Int32:
+                    return sizeof(int);
+                case UnionValueType.UInt32:
+                    return sizeof(uint);
+                case UnionValueType.Int64:
+                    return sizeof(long);
+                case UnionValueType.UInt64:
+                    return sizeof(ulong);
+                case UnionValueType.Single:
+                    return sizeof(float);
+                case UnionValueType.Double:
+                    return sizeof(double);
+                case UnionValueType.Decimal:
+                    return sizeof(decimal);
+                case UnionValueType.DateTime:
+                    return sizeof(long);
+                case UnionValueType.TimeSpan:
+                    return sizeof(long);
+                case UnionValueType.Guid:
+                    return 16;
+                default:
+                    throw new NotSupportedException(type.ToString());
+            }
         }
         public static unsafe UnionValue FromObject(object input)
         {
@@ -495,7 +544,7 @@ namespace UnionType
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ToBytes(in Span<byte> buffer)
+        public void ToBytes(Span<byte> buffer)
         {
             new ReadOnlySpan<byte>(ToPointer(), buffer.Length).CopyTo(buffer);
         }
@@ -540,7 +589,7 @@ namespace UnionType
             }
             else
             {
-                var point = GCHandle.Alloc(value);
+                var point = GCHandle.Alloc(value, GCHandleType.Weak);
                 IntPtr = (IntPtr)point;
                 TypeNameType = value!.GetType();
                 unionValueType = UnionValueType.Object;
@@ -686,11 +735,7 @@ namespace UnionType
                 }
                 return other.Object.Equals(Object);
             }
-            var leftBuffer = stackalloc byte[Size];
-            var rightBuffer = stackalloc byte[Size];
-            ToBytes(leftBuffer);
-            other.ToBytes(rightBuffer);
-            return new ReadOnlySpan<byte>(leftBuffer, Size).SequenceEqual(new ReadOnlySpan<byte>(rightBuffer, Size));
+            return new ReadOnlySpan<byte>(ToPointer(), Size).SequenceEqual(new ReadOnlySpan<byte>(&other, Size));
         }
         public void* ToPointer()
         {

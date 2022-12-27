@@ -92,7 +92,6 @@ namespace UnionType
                 Type = UnionValueType.Object;
             }
         }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe UnionValue Create(T value)
         {
