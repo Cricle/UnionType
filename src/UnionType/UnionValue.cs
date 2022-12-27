@@ -423,6 +423,16 @@ namespace UnionType
             return UnionValueCreator<T>.Create(input);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int CleanNoUsed(ref UnionValue value)
+        {
+            var size = GetBitsSize(value.unionValueType);
+            if (size != 16)
+            {
+                new Span<byte>(((byte*)value.ToPointer() + size), 17 - size - 1).Fill(0);
+            }
+            return 17 - size - 1;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetBitsSize(UnionValueType type)
         {
             switch (type)
@@ -433,7 +443,7 @@ namespace UnionType
                 case UnionValueType.String:
                 case UnionValueType.IntPtr:
                 case UnionValueType.DBNull:
-                    return IntPtr.Size;
+                    return 16;
                 case UnionValueType.Boolean:
                     return sizeof(bool);
                 case UnionValueType.Char:

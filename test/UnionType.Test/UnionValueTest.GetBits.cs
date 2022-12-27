@@ -20,7 +20,7 @@ namespace UnionType.Test
         [DataRow(UnionValueType.IntPtr)]
         public void BitsIntPtr(UnionValueType type)
         {
-            Assert.AreEqual(IntPtr.Size, UnionValue.GetBitsSize(type));
+            Assert.AreEqual(16, UnionValue.GetBitsSize(type));
         }
         [TestMethod]
         public void BitsChar()
@@ -106,6 +106,23 @@ namespace UnionType.Test
         public void BitsNoSupport()
         {
             Assert.ThrowsException<NotSupportedException>(() => UnionValue.GetBitsSize((UnionValueType)byte.MaxValue));
+        }
+        [TestMethod]
+        public void CleanNoUsed_HasBits()
+        {
+            var uv = new UnionValue { @long = long.MaxValue, unionValueType = UnionValueType.Int32 };
+            uv.@int = 123;
+            var act=UnionValue.CleanNoUsed(ref uv);
+            Assert.AreEqual(17 - 1 - sizeof(int), act);
+            Assert.AreEqual(123, uv.@long);
+        }
+        [TestMethod]
+        public void CleanNoUsed_NoBits()
+        {
+            var uv = new UnionValue { Decimal=123};
+            var act = UnionValue.CleanNoUsed(ref uv);
+            Assert.AreEqual(0, act);
+            Assert.AreEqual(123m, uv.Decimal);
         }
     }
 }
