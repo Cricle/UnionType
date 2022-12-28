@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>10.0</LangVersion>
-    <Version>1.3.3</Version>
+    <Version>1.3.4</Version>
     <RepositoryUrl>https://github.com/Cricle/UnionType</RepositoryUrl>
     <RepositoryType>https://github.com/Cricle/UnionType</RepositoryType>
     <PackageTags>union;type;</PackageTags>
@@ -14,6 +14,8 @@
       Powerful, low consumption, and highly scalable type for c#.
     </Description>
     <Authors>HCricle</Authors>
+    <PackageProjectUrl>https://github.com/Cricle/UnionType</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -21,6 +23,12 @@
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
