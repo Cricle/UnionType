@@ -22,17 +22,235 @@ Object store use `GCHandle` to pin memory.
 
 > `samples/UnionType.Sample`
 
-In normal use case
+### implicit cast in any time
 
 ```csharp
-//Define an int type
-UnionValue uv=123;
+using System;
+using UnionType;
 
-//Cast back
-
-uv.Int;
-
+internal class Program
+{
+    static void Main()
+    {
+        UnionValue a = 123;
+        int b = a;//123
+    }
+}
 ```
+
+### You can use navite point or ref 
+
+```csharp
+using System;
+using UnionType;
+
+internal class Program
+{
+    unsafe static void Main()
+    {
+        UnionValue a = 123;
+        Console.WriteLine(*a.ToPointer<int>());//Print 123
+    }
+}
+```
+
+### It is not a read-only type
+
+```csharp
+using System;
+using UnionType;
+
+internal class Program
+{
+    static void Main()
+    {
+        var uv = (UnionValue)123;
+        Inc(ref uv);
+        Console.WriteLine(uv.@int);//Print 124
+    }
+    private static void Inc(ref UnionValue value)
+    {
+        value.@int++;
+    }
+}
+```
+
+### It can accommodate all basic types
+
+- `void`(Empty)
+- `byte`
+- `sbyte`
+- `bool`
+- `char`
+- `short`
+- `ushort`
+- `int`
+- `uint`
+- `long`
+- `ulong`
+- `float`(Single)
+- `double`
+- `decimal`
+- `object`
+- `DBNull`
+- `DateTime`
+- `String`
+- `TimeSpan`(Additional types)
+- `Guid`(Additional types)
+- `IntPtr`(Additional types)
+
+### It can fast alloc decimal from number
+
+> Performace is alloc decimal benchmark
+
+```csharp
+using System;
+using UnionType;
+
+internal class Program
+{
+    static void Main()
+    {
+        var uv = UnionValue.FromAsDecimal(123);
+        Console.WriteLine(uv.@decimal);//123
+    }
+}
+```
+
+### Implement p type interface(No .NET 7)
+
+- ICloneable
+- IComparable
+- IConvertible
+- IFormattable
+
+### Space saving
+
+```csharp
+using System;
+using System.Runtime.CompilerServices;
+using UnionType;
+
+internal class Program
+{
+    static void Main()
+    {
+        Console.WriteLine(Unsafe.SizeOf<UnionValue>());//In .NET7.0 print 24, other print 17
+    }
+}
+```
+
+### Able to operate
+
+```csharp
+using System;
+using UnionType;
+
+internal class Program
+{
+    static void Main()
+    {
+        UnionValue a = 123;
+        UnionValue b = 456;
+
+        var result = a + b;
+        Console.WriteLine(result.ToString());//579
+    }
+}
+```
+
+Supports
+
+- `+`
+- `-`
+- `*`
+- `/`
+- `%`
+
+> Integer will become long, floating point will become decimal
+
+### Can compare
+
+```csharp
+using System;
+using UnionType;
+
+internal class Program
+{
+    static void Main()
+    {
+        UnionValue a = 123;
+        var b = 456;
+        Console.WriteLine(a > b);//False
+        Console.WriteLine(a < b);//True
+    }
+}
+```
+
+Supports
+
+- `>`
+- `>=`
+- `<`
+- `<=`
+- `==` It will check type
+- `!=` It will check type
+
+### Can store object(weak ref)
+
+```csharp
+using System;
+using UnionType;
+
+internal class Program
+{
+    static void Main()
+    {
+        var obj = new Program();
+        var uv = new UnionValue { Object = obj };
+        Console.WriteLine(uv.TypeNameString);//Program, rsa2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+        Console.WriteLine(uv.Object);//Program
+    }
+}
+```
+
+### No box, raw type, can box if you need
+
+```csharp
+using System;
+using UnionType;
+
+internal class Program
+{
+    static void Main()
+    {
+        var uv = UnionValue.FromAsDecimal(123);
+        Console.WriteLine(uv.Box());//123
+    }
+}
+```
+
+### FromObject or raw type
+
+```csharp
+using System;
+using UnionType;
+
+internal class Program
+{
+    static void Main()
+    {
+        var uv = UnionValue.FromObject(123);//Fast
+        Console.WriteLine(uv.Box());//123
+        uv = UnionValue.FromObject((object)123);
+        Console.WriteLine(uv.Box());//123
+    }
+}
+```
+
+>I use raw point copy!
+
+![](https://github.com/Cricle/UnionType/blob/main/src/UnionType/UnionValueCreator.cs#L108)
 
 In serialize case.(Can see `UnionValueToBytesHelperTest.cs`)
 
