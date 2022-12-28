@@ -250,7 +250,7 @@ internal class Program
 
 >I use raw point copy!
 
-![](https://github.com/Cricle/UnionType/blob/main/src/UnionType/UnionValueCreator.cs#L108)
+https://github.com/Cricle/UnionType/blob/eff150cb9a216506ea8d6b3968101165251e431b/src/UnionType/UnionValueCreator.cs#L108
 
 In serialize case.(Can see `UnionValueToBytesHelperTest.cs`)
 
