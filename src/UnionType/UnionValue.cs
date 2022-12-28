@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -362,7 +364,6 @@ namespace UnionType
                 unionValueType = UnionValueType.TimeSpan;
             }
         }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetTypeCode(TypeCode code)
         {
@@ -372,16 +373,18 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe UnionValue FromBytes(byte[] buffer)
         {
-            var val = default(UnionValue);
-            fixed (byte* ptr = buffer)
-                Unsafe.Copy(ref val, ptr);
+            var val = new UnionValue();
+            Unsafe.Copy(ref val, Unsafe.AsPointer(ref buffer[0]));
             return val;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe UnionValue FromBytes(ReadOnlySpan<byte> buffer)
         {
-            var val = default(UnionValue);
-            buffer.CopyTo(new Span<byte>(val.ToPointer(), Size));
+            var val = new UnionValue();
+            fixed (byte* ptr = buffer)
+            {
+                Unsafe.Copy(ref val, ptr);
+            }
             return val;
         }
         //https://source.dot.net/#System.Private.CoreLib/src/libraries/System.Private.CoreLib/src/System/Decimal.cs,79
@@ -537,6 +540,13 @@ namespace UnionType
                     break;
             }
             throw new NotSupportedException(input.GetType().ToString());
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte[] ToUsedBytes()
+        {
+            var buffer = new byte[GetBitsSize(unionValueType)];
+            ToBytes(buffer.AsSpan());
+            return buffer;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ToBytes()
@@ -943,82 +953,82 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Guid(UnionValue val)
         {
-            return val.Guid;
+            return val.@guid;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator bool(UnionValue val)
         {
-            return val.Boolean;
+            return val.@boolean;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator char(UnionValue val)
         {
-            return val.Char;
+            return val.@char;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator byte(UnionValue val)
         {
-            return val.Byte;
+            return val.@byte;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator sbyte(UnionValue val)
         {
-            return val.SByte;
+            return val.@sbyte;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator short(UnionValue val)
         {
-            return val.Short;
+            return val.@short;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ushort(UnionValue val)
         {
-            return val.UShort;
+            return val.@ushort;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator int(UnionValue val)
         {
-            return val.Int;
+            return val.@int;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator uint(UnionValue val)
         {
-            return val.UInt;
+            return val.@uint;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator long(UnionValue val)
         {
-            return val.Long;
+            return val.@long;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ulong(UnionValue val)
         {
-            return val.ULong;
+            return val.@ulong;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator float(UnionValue val)
         {
-            return val.Float;
+            return val.@float;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator double(UnionValue val)
         {
-            return val.Double;
+            return val.@double;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator decimal(UnionValue val)
         {
-            return val.Decimal;
+            return val.@decimal;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator DateTime(UnionValue val)
         {
-            return val.DateTime;
+            return val.@dateTime;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator TimeSpan(UnionValue val)
         {
-            return val.TimeSpan;
+            return val.@timeSpan;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator DBNull(UnionValue val)
@@ -1028,13 +1038,14 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator string?(UnionValue val)
         {
-            return val.ToString();
+            return val.String;
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator IntPtr(UnionValue val)
         {
             return val.IntPtr;
         }
+
         object ICloneable.Clone()
         {
             return Clone();
@@ -1276,6 +1287,7 @@ namespace UnionType
         {
             return new BigInteger(ToDecimal(null));
         }
+
     }
 
 }

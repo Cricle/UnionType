@@ -20,5 +20,13 @@
             uv.ToBytes(buffer.AsSpan());
             Assert.AreEqual(123, BitConverter.ToInt32(buffer, 0));
         }
+        [TestMethod]
+        public void ToUsedBytes()
+        {
+            var bs = UnionValue.FromObject(123);
+            var buffer = bs.ToUsedBytes();
+            Assert.AreEqual(sizeof(int), buffer.Length);
+            Assert.AreEqual(123, BitConverter.ToInt32(buffer,0));
+        }
     }
 }

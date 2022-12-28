@@ -52,11 +52,9 @@ namespace UnionType.Test
         public unsafe void GetRef()
         {
             var uv = new UnionValue { Int = 123 };
-            var @ref = uv.GetReference();
-            var bytes = new byte[sizeof(int)];
-            var ptr = Unsafe.AsPointer(ref @ref);
-            var result = *(int*)ptr;
-            Assert.AreEqual(123, result);
+            ref byte @ref = ref uv.GetReference();
+            ref int data =ref Unsafe.AsRef<int>(Unsafe.AsPointer(ref @ref));
+            Assert.AreEqual(123, data);
         }
         [TestMethod]
         public unsafe void GetRef_Any()
