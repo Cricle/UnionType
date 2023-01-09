@@ -10,7 +10,7 @@ namespace UnionType
 {
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]
-    public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable
+    public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable,IDisposable
     {
         public static readonly int Size = 17;
 
@@ -244,7 +244,11 @@ namespace UnionType
             {
                 if (@intPtr != IntPtr.Zero)
                 {
-                    GCHandle.FromIntPtr(@intPtr).Free();
+                    var ptr=GCHandle.FromIntPtr(@intPtr);
+                    if (ptr.IsAllocated)
+                    {
+                        ptr.Free();
+                    }
                 }
                 @intPtr = value;
                 unionValueType = UnionValueType.IntPtr;
@@ -310,11 +314,15 @@ namespace UnionType
             {
                 if (typeName != IntPtr.Zero)
                 {
-                    GCHandle.FromIntPtr(typeName).Free();
+                    var ptr = GCHandle.FromIntPtr(typeName);
+                    if (ptr.IsAllocated)
+                    {
+                        ptr.Free();
+                    }
                 }
                 if (value != null)
                 {
-                    typeName = (IntPtr)GCHandle.Alloc(value, GCHandleType.Weak);
+                    typeName = (IntPtr)GCHandle.Alloc(value, GCHandleType.Pinned);
                 }
                 else
                 {
@@ -342,7 +350,7 @@ namespace UnionType
                 }
                 if (value != null)
                 {
-                    intPtr = (IntPtr)GCHandle.Alloc(value, GCHandleType.Weak);
+                    intPtr = (IntPtr)GCHandle.Alloc(value, GCHandleType.Pinned);
                 }
                 else
                 {
@@ -614,7 +622,7 @@ namespace UnionType
             }
             else
             {
-                var point = GCHandle.Alloc(value, GCHandleType.Weak);
+                var point = GCHandle.Alloc(value);
                 IntPtr = (IntPtr)point;
                 TypeNameType = value!.GetType();
                 unionValueType = UnionValueType.Object;
@@ -1288,6 +1296,26 @@ namespace UnionType
             return new BigInteger(ToDecimal(null));
         }
 
+        public void Dispose()
+        {
+            if (intPtr!=IntPtr.Zero)
+            {
+                var ptr=GCHandle.FromIntPtr(intPtr);
+                if (ptr.IsAllocated)
+                {
+                    ptr.Free();
+                }
+            }
+            if (typeName!=IntPtr.Zero)
+            {
+                var ptr = GCHandle.FromIntPtr(typeName);
+                if (ptr.IsAllocated)
+                {
+                    ptr.Free();
+                }
+            }
+            GC.SuppressFinalize(this);
+        }
     }
 
 }
