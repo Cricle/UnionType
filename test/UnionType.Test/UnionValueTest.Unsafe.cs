@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace UnionType.Test
 {
@@ -7,7 +8,7 @@ namespace UnionType.Test
         [TestMethod]
         public unsafe void Size()
         {
-            Assert.AreEqual(17, UnionValue.Size);
+            Assert.AreEqual(16 + sizeof(UnionValueType) + sizeof(byte), UnionValue.Size);
         }
         [TestMethod]
         public unsafe void ToPointer()

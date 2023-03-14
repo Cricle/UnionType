@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace UnionType
 {
@@ -93,17 +94,21 @@ namespace UnionType
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe UnionValue Create(T value)
+        public static unsafe UnionValue Create(T value, GCHandleType gcHandleType = GCHandleType.Normal)
         {
             if (Type == UnionValueType.Object)
             {
-                return new UnionValue { Object = value };
+                var uv=new UnionValue { gcHandleType = (byte)gcHandleType };
+                uv.SetObject(value);
+                return uv;
             }
             else if (Type == UnionValueType.String)
             {
-                return new UnionValue { String = (string?)(object?)value };
+                var uv = new UnionValue { gcHandleType = (byte)gcHandleType };
+                uv.String= (string?)(object?)value;
+                return uv;
             }
-            var v = new UnionValue { unionValueType = Type };
+            var v = new UnionValue { unionValueType = Type,gcHandleType=(byte)gcHandleType };
 #pragma warning disable CS8500
             *(T*)&v = value;
 #pragma warning restore CS8500

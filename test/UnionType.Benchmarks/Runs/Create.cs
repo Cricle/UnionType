@@ -18,6 +18,14 @@ namespace UnionType.Benchmarks.Runs
             }
         }
         [Benchmark]
+        public void FromDynamic()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                dynamic _ = i;
+            }
+        }
+        [Benchmark]
         public void FromObject()
         {
             for (int i = 0; i < Count; i++)

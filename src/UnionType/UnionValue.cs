@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -12,7 +10,7 @@ namespace UnionType
     [StructLayout(LayoutKind.Explicit)]
     public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable,IDisposable
     {
-        public static readonly int Size = 17;
+        public static readonly int Size = 16+sizeof(UnionValueType)+sizeof(byte);
 
         public static UnionValue Empty => new UnionValue();
 
@@ -21,7 +19,7 @@ namespace UnionType
 
         static UnionValue()
         {
-            var n = string.Intern(typeof(string).AssemblyQualifiedName!);
+            var n = typeof(string).AssemblyQualifiedName;
             stringPtr = (IntPtr)GCHandle.Alloc(n, GCHandleType.Pinned);
         }
 
@@ -69,6 +67,16 @@ namespace UnionType
         public IntPtr @typeName;
         [FieldOffset(16)]
         public UnionValueType unionValueType;
+        [FieldOffset(17)]
+        public byte gcHandleType;
+
+        public GCHandleType GCHandleType
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (GCHandleType)gcHandleType;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set => gcHandleType = (byte)value;
+        }
 
         public Guid Guid
         {
@@ -242,14 +250,6 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                if (@intPtr != IntPtr.Zero)
-                {
-                    var ptr=GCHandle.FromIntPtr(@intPtr);
-                    if (ptr.IsAllocated)
-                    {
-                        ptr.Free();
-                    }
-                }
                 @intPtr = value;
                 unionValueType = UnionValueType.IntPtr;
             }
@@ -312,17 +312,9 @@ namespace UnionType
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                if (typeName != IntPtr.Zero)
-                {
-                    var ptr = GCHandle.FromIntPtr(typeName);
-                    if (ptr.IsAllocated)
-                    {
-                        ptr.Free();
-                    }
-                }
                 if (value != null)
                 {
-                    typeName = (IntPtr)GCHandle.Alloc(value, GCHandleType.Pinned);
+                    typeName = (IntPtr)GCHandle.Alloc(value, (GCHandleType)gcHandleType);
                 }
                 else
                 {
@@ -339,18 +331,15 @@ namespace UnionType
                 {
                     return null;
                 }
-                return (string?)GCHandle.FromIntPtr(IntPtr).Target;
+                
+                return (string?)(GCHandle.FromIntPtr(intPtr).Target);
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                if (intPtr != IntPtr.Zero)
-                {
-                    GCHandle.FromIntPtr(intPtr).Free();
-                }
                 if (value != null)
                 {
-                    intPtr = (IntPtr)GCHandle.Alloc(value, GCHandleType.Pinned);
+                    intPtr = (IntPtr)GCHandle.Alloc(value, (GCHandleType)gcHandleType);
                 }
                 else
                 {
@@ -429,9 +418,9 @@ namespace UnionType
             return new UnionValue { decimal_lo64 = i, unionValueType = UnionValueType.Decimal };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static UnionValue FromObject<T>(T input)
+        public static UnionValue FromObject<T>(T input, GCHandleType gcHandleType = GCHandleType.Normal)
         {
-            return UnionValueCreator<T>.Create(input);
+            return UnionValueCreator<T>.Create(input, gcHandleType);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CleanNoUsed(ref UnionValue value)
@@ -491,7 +480,7 @@ namespace UnionType
                     throw new NotSupportedException(type.ToString());
             }
         }
-        public static unsafe UnionValue FromObject(object input)
+        public static unsafe UnionValue FromObject(object input, GCHandleType gcHandleType = GCHandleType.Normal)
         {
             if (input is TimeSpan ts)
             {
@@ -511,7 +500,11 @@ namespace UnionType
                 case TypeCode.Empty:
                    return default;
                 case TypeCode.Object:
-                    return new UnionValue { Object= input };
+                    {
+                        var uv = new UnionValue { gcHandleType = (byte)gcHandleType };
+                        uv.Object = input;
+                        return uv;
+                    }
                 case TypeCode.DBNull:
                     return new UnionValue { UnionValueType = UnionValueType.DBNull };
                 case TypeCode.Boolean:
@@ -543,7 +536,11 @@ namespace UnionType
                 case TypeCode.DateTime:
                     return (DateTime)input;
                 case TypeCode.String:
-                    return (string)input;
+                    {
+                        var uv = new UnionValue { gcHandleType = (byte)gcHandleType };
+                        uv.String = (string)input;
+                        return uv;
+                    }
                 default:
                     break;
             }
@@ -610,10 +607,14 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object? GetObject()
         {
-            return GCHandle.FromIntPtr(IntPtr).Target;
+            return GCHandle.FromIntPtr(intPtr).Target;
         }
-        public void SetObject(object? value)
+        public void SetObject(object? value, GCHandleType gcHandleType= GCHandleType.Weak)
         {
+            if (unionValueType== UnionValueType.Object&&intPtr!=IntPtr.Zero&&gcHandleType!= GCHandleType.Weak)
+            {
+                GCHandle.FromIntPtr(intPtr).Free();
+            }
             if (value == null)
             {
                 unionValueType = UnionValueType.Empty;
@@ -622,8 +623,8 @@ namespace UnionType
             }
             else
             {
-                var point = GCHandle.Alloc(value);
-                IntPtr = (IntPtr)point;
+                this.gcHandleType = (byte)gcHandleType;
+                IntPtr = (IntPtr)GCHandle.Alloc(value, (GCHandleType)gcHandleType);
                 TypeNameType = value!.GetType();
                 unionValueType = UnionValueType.Object;
             }
@@ -1298,23 +1299,21 @@ namespace UnionType
 
         public void Dispose()
         {
-            if (intPtr!=IntPtr.Zero)
+            try
             {
-                var ptr=GCHandle.FromIntPtr(intPtr);
-                if (ptr.IsAllocated)
+                if (TypeCode == TypeCode.Object|| TypeCode == TypeCode.String)
                 {
-                    ptr.Free();
+                    if (intPtr != IntPtr.Zero)
+                    {
+                        GCHandle.FromIntPtr(intPtr).Free();
+                    }
+                    if (typeName != IntPtr.Zero)
+                    {
+                        GCHandle.FromIntPtr(typeName).Free();
+                    }
                 }
             }
-            if (typeName!=IntPtr.Zero)
-            {
-                var ptr = GCHandle.FromIntPtr(typeName);
-                if (ptr.IsAllocated)
-                {
-                    ptr.Free();
-                }
-            }
-            GC.SuppressFinalize(this);
+            catch (Exception) { }
         }
     }
 

@@ -28,6 +28,14 @@ namespace UnionType.Benchmarks.Runs
             }
         }
         [Benchmark]
+        public void Dynamic()
+        {
+            for (int i = -Count; i < 0; i++)
+            {
+                dynamic _ = i;
+            }
+        }
+        [Benchmark]
         public void Box()
         {
             for (int i = -Count; i < 0; i++)
