@@ -660,7 +660,7 @@ namespace UnionType
         }
         public void SetObject(object? value, GCHandleType gcHandleType= GCHandleType.Weak)
         {
-            if (unionValueType== UnionValueType.Object&&intPtr!=IntPtr.Zero&&gcHandleType!= GCHandleType.Weak)
+            if (objectHandler.IsAllocated)
             {
                 objectHandler.Free();
             }
@@ -674,7 +674,10 @@ namespace UnionType
             {
                 this.gcHandleType = (byte)gcHandleType;
                 ObjectHandler = GCHandle.Alloc(value, gcHandleType);
-                TypeNameType = value!.GetType();
+                if (objectWithType)
+                {
+                    TypeNameType = value!.GetType();
+                }
                 unionValueType = UnionValueType.Object;
             }
         }
@@ -1348,21 +1351,17 @@ namespace UnionType
 
         public void Dispose()
         {
-            try
+            if (TypeCode == TypeCode.Object || TypeCode == TypeCode.String)
             {
-                if (TypeCode == TypeCode.Object|| TypeCode == TypeCode.String)
+                if (objectHandler.IsAllocated)
                 {
-                    if (objectHandler.IsAllocated)
-                    {
-                        objectHandler.Free();
-                    }
-                    if (typeGCHandler.IsAllocated)
-                    {
-                        typeGCHandler.Free();
-                    }
+                    objectHandler.Free();
+                }
+                if (typeGCHandler.IsAllocated)
+                {
+                    typeGCHandler.Free();
                 }
             }
-            catch (Exception) { }
         }
     }
 
