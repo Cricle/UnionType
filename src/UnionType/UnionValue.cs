@@ -658,7 +658,7 @@ namespace UnionType
         {
             return objectHandler.Target;
         }
-        public void SetObject(object? value, GCHandleType gcHandleType= GCHandleType.Weak)
+        public void SetObject(object? value, GCHandleType gcHandleType= GCHandleType.Normal)
         {
             if (objectHandler.IsAllocated)
             {
