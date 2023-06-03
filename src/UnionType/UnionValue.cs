@@ -658,7 +658,7 @@ namespace UnionType
         {
             return objectHandler.Target;
         }
-        public void SetObject(object? value, GCHandleType gcHandleType= GCHandleType.Normal)
+        public void SetObject(object? value)
         {
             if (objectHandler.IsAllocated)
             {
@@ -672,8 +672,7 @@ namespace UnionType
             }
             else
             {
-                this.gcHandleType = (byte)gcHandleType;
-                ObjectHandler = GCHandle.Alloc(value, gcHandleType);
+                ObjectHandler = GCHandle.Alloc(value, (GCHandleType)gcHandleType);
                 if (objectWithType)
                 {
                     TypeNameType = value!.GetType();

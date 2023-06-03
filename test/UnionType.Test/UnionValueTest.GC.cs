@@ -15,7 +15,8 @@ namespace UnionType.Test
         {
             var obj = new object();
             var uv = new UnionValue();
-            uv.SetObject(obj, GCHandleType.Normal);
+            uv.GCHandleType = GCHandleType.Normal;
+            uv.SetObject(obj);
             Assert.AreEqual(GCHandleType.Normal, uv.GCHandleType);
             obj = null;
             GC.Collect();
