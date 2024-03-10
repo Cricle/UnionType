@@ -8,88 +8,58 @@ namespace UnionType
 {
     [Serializable]
     [StructLayout(LayoutKind.Explicit)]
-    public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable,IDisposable
+    public unsafe struct UnionValue : IEquatable<UnionValue>, ICloneable, IComparable, IConvertible, IFormattable
     {
-        private static bool objectWithType = true;
-        public static bool ObjectWithType
-        {
-            get => objectWithType;
-            set => objectWithType = value;
-        }
-
-        public static readonly int Size = 16+sizeof(UnionValueType)+sizeof(byte);
+        public static readonly int Size = Unsafe.SizeOf<UnionValue>();
 
         public static UnionValue Empty => new UnionValue();
 
-        private static readonly IntPtr stringPtr;
-        private static readonly GCHandle stringPtrGcHandler;
         private static readonly byte[] EmptyBytes = Array.Empty<byte>();
 
-        static UnionValue()
-        {
-            var n = typeof(string).AssemblyQualifiedName;
-            stringPtrGcHandler = GCHandle.Alloc(n, GCHandleType.Pinned);
-            stringPtr = (IntPtr)stringPtrGcHandler;
-        }
-
         [FieldOffset(0)]
-        public bool @boolean;
+        internal bool @boolean;
         [FieldOffset(0)]
-        public byte @byte;
+        internal byte @byte;
         [FieldOffset(0)]
-        public char @char;
+        internal char @char;
         [FieldOffset(0)]
-        public sbyte @sbyte;
+        internal sbyte @sbyte;
         [FieldOffset(0)]
-        public short @short;
+        internal short @short;
         [FieldOffset(0)]
-        public ushort @ushort;
+        internal ushort @ushort;
         [FieldOffset(0)]
-        public int @int;
+        internal int @int;
         [FieldOffset(0)]
-        public uint @uint;
+        internal uint @uint;
         [FieldOffset(0)]
-        public long @long;
+        internal long @long;
         [FieldOffset(0)]
-        public ulong @ulong;
+        internal ulong @ulong;
         [FieldOffset(0)]
-        public float @float;
+        internal float @float;
         [FieldOffset(0)]
-        public double @double;
+        internal double @double;
         [FieldOffset(0)]
-        public decimal @decimal;
+        internal decimal @decimal;
         [FieldOffset(0)]
-        public int @decimal_flags;
+        internal int @decimal_flags;
         [FieldOffset(4)]
-        public uint @decimal_hi32;
+        internal uint @decimal_hi32;
         [FieldOffset(8)]
-        public ulong @decimal_lo64;
+        internal ulong @decimal_lo64;
         [FieldOffset(0)]
-        public DateTime @dateTime;
+        internal DateTime @dateTime;
         [FieldOffset(0)]
-        public TimeSpan @timeSpan;
+        internal TimeSpan @timeSpan;
         [FieldOffset(0)]
-        public Guid @guid;
+        internal Guid @guid;
         [FieldOffset(0)]//8L
-        public IntPtr @intPtr;
-        [FieldOffset(0)]
-        public GCHandle objectHandler;
-        [FieldOffset(8)]//8L
-        public IntPtr @typeName;
-        [FieldOffset(8)]
-        public GCHandle typeGCHandler;
-        [FieldOffset(16)]
-        public UnionValueType unionValueType;
-        [FieldOffset(17)]
-        public byte gcHandleType;
-
-        public GCHandleType GCHandleType
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (GCHandleType)gcHandleType;
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => gcHandleType = (byte)value;
-        }
+        internal IntPtr @intPtr;
+        [FieldOffset(0)]//8L
+        internal UIntPtr @uintPtr;
+        [FieldOffset(16)]//8L
+        internal object? @object;
 
         public Guid Guid
         {
@@ -99,7 +69,7 @@ namespace UnionType
             set
             {
                 @guid = value;
-                unionValueType = UnionValueType.Guid;
+                @object = TypeInfo.GuidInfo;
             }
         }
         public bool Boolean
@@ -110,7 +80,7 @@ namespace UnionType
             set
             {
                 @boolean = value;
-                unionValueType = UnionValueType.Boolean;
+                @object = TypeInfo.BooleanInfo;
             }
         }
         public byte Byte
@@ -121,7 +91,7 @@ namespace UnionType
             set
             {
                 @byte = value;
-                unionValueType = UnionValueType.Byte;
+                @object = TypeInfo.ByteInfo;
             }
         }
         public sbyte SByte
@@ -132,7 +102,7 @@ namespace UnionType
             set
             {
                 @sbyte = value;
-                unionValueType = UnionValueType.SByte;
+                @object = TypeInfo.SByteInfo;
             }
         }
         public char Char
@@ -143,7 +113,7 @@ namespace UnionType
             set
             {
                 @char = value;
-                unionValueType = UnionValueType.Char;
+                @object = TypeInfo.CharInfo;
             }
         }
         public short Short
@@ -154,7 +124,7 @@ namespace UnionType
             set
             {
                 @short = value;
-                unionValueType = UnionValueType.Int16;
+                @object = TypeInfo.Int16Info;
             }
         }
         public ushort UShort
@@ -165,7 +135,7 @@ namespace UnionType
             set
             {
                 @ushort = value;
-                unionValueType = UnionValueType.UInt16;
+                @object = TypeInfo.UInt16Info;
             }
         }
         public int Int
@@ -176,7 +146,7 @@ namespace UnionType
             set
             {
                 @int = value;
-                unionValueType = UnionValueType.Int32;
+                @object = TypeInfo.Int32Info;
             }
         }
         public uint UInt
@@ -187,7 +157,7 @@ namespace UnionType
             set
             {
                 @uint = value;
-                unionValueType = UnionValueType.UInt32;
+                @object = TypeInfo.UInt32Info;
             }
         }
         public long Long
@@ -198,7 +168,7 @@ namespace UnionType
             set
             {
                 @long = value;
-                unionValueType = UnionValueType.Int64;
+                @object = TypeInfo.Int64Info;
             }
         }
         public ulong ULong
@@ -209,7 +179,7 @@ namespace UnionType
             set
             {
                 @ulong = value;
-                unionValueType = UnionValueType.UInt64;
+                @object = TypeInfo.UInt64Info;
             }
         }
         public float Float
@@ -220,7 +190,7 @@ namespace UnionType
             set
             {
                 @float = value;
-                unionValueType = UnionValueType.Single;
+                @object = TypeInfo.SingleInfo;
             }
         }
         public double Double
@@ -231,7 +201,7 @@ namespace UnionType
             set
             {
                 @double = value;
-                unionValueType = UnionValueType.Double;
+                @object = TypeInfo.DoubleInfo;
             }
         }
         public decimal Decimal
@@ -242,7 +212,7 @@ namespace UnionType
             set
             {
                 @decimal = value;
-                unionValueType = UnionValueType.Decimal;
+                @object = TypeInfo.DecimalInfo;
             }
         }
         public DateTime DateTime
@@ -253,7 +223,7 @@ namespace UnionType
             set
             {
                 dateTime = value;
-                unionValueType = UnionValueType.DateTime;
+                @object = TypeInfo.DateTimeInfo;
             }
         }
         public IntPtr IntPtr
@@ -264,141 +234,72 @@ namespace UnionType
             set
             {
                 @intPtr = value;
-                unionValueType = UnionValueType.IntPtr;
+                @object = TypeInfo.IntPtrInfo;
             }
         }
-        public GCHandle TypeGCHandler
+        public UIntPtr UIntPtr
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => typeGCHandler;
+            get => @uintPtr;
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                if (typeGCHandler != stringPtrGcHandler && typeGCHandler.IsAllocated)
-                {
-                    typeGCHandler.Free();
-                }
-                typeGCHandler = value;
-                TypeName = (IntPtr)value;
-            }
-        }
-        public GCHandle ObjectHandler
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => objectHandler;
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                if (objectHandler.IsAllocated)
-                {
-                    objectHandler.Free();
-                }
-                objectHandler = value;
-                IntPtr = (IntPtr)value;
+                @uintPtr = value;
+                @object = TypeInfo.UIntPtrInfo;
             }
         }
         public UnionValueType UnionValueType
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => unionValueType;
+            get
+            {
+                if (@object is TypeInfo type)
+                {
+                    return type.TypeCode;
+                }
+                else if (@object is string)
+                {
+                    return UnionValueType.String;
+                }
+                else if (@object is null)
+                {
+                    return UnionValueType.Empty;
+                }
+                return UnionValueType.Object;
+            }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => unionValueType = value;
+            set => @object = TypeInfo.GetTypeInfo(value);
         }
         public TypeCode TypeCode
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => (TypeCode)unionValueType;
+            get => (TypeCode)UnionValueType;
         }
-        public IntPtr TypeName
+        public string? String
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => typeName;
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => typeName = value;
+            get => ToString();
+            set => Object = value;
         }
         public object? Object
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => GetObject();
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => SetObject(value);
-        }
-        public Type? TypeNameType
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                var name = TypeNameString;
-                if (string.IsNullOrEmpty(name))
-                {
-                    return null;
-                }
-                return Type.GetType(name, false);
-            }
+            get => @object;
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                TypeNameString = value?.AssemblyQualifiedName;
+                if (value == null)
+                {
+                    @object = TypeInfo.EmptyInfo;
+                    return;
+                }
+                else if (value is DBNull)
+                {
+                    @object = TypeInfo.DBNullInfo;
+                    return;
+                }
+                @object = value;
             }
         }
-        public string? TypeNameString
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                if (typeName == IntPtr.Zero)
-                {
-                    return null;
-                }
-                return (string?)GCHandle.FromIntPtr(typeName).Target;
-            }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                if (value != null)
-                {
-                    typeGCHandler= GCHandle.Alloc(value, (GCHandleType)gcHandleType);
-                    typeName = (IntPtr)typeGCHandler;
-                }
-                else
-                {
-                    if (typeGCHandler.IsAllocated)
-                    {
-                        typeGCHandler.Free();
-                    }
-                    typeGCHandler = default;
-                    typeName = IntPtr.Zero;
-                }
-            }
-        }
-        public string? String
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                if (IntPtr == IntPtr.Zero)
-                {
-                    return null;
-                }
-                
-                return (string?)(ObjectHandler.Target);
-            }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                if (value != null)
-                {
-                    ObjectHandler = GCHandle.Alloc(value, (GCHandleType)gcHandleType);
-                }
-                else
-                {
-                    ObjectHandler = default;
-                }
-                unionValueType = UnionValueType.String;
-                TypeGCHandler = stringPtrGcHandler;
-            }
-        }
-        
         public TimeSpan TimeSpan
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -407,13 +308,8 @@ namespace UnionType
             set
             {
                 timeSpan = value;
-                unionValueType = UnionValueType.TimeSpan;
+                @object = TypeInfo.TimeSpanInfo;
             }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetTypeCode(TypeCode code)
-        {
-            unionValueType = (UnionValueType)code;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -442,14 +338,14 @@ namespace UnionType
             if (i < 0)
             {
                 i = -i;
-                return new UnionValue { decimal_flags = SignMask, decimal_lo64 = (uint)i, unionValueType = UnionValueType.Decimal };
+                return new UnionValue { decimal_flags = SignMask, decimal_lo64 = (uint)i, @object = TypeInfo.DecimalInfo };
             }
-            return new UnionValue { decimal_lo64 = (uint)i, unionValueType = UnionValueType.Decimal };
+            return new UnionValue { decimal_lo64 = (uint)i, @object = TypeInfo.DecimalInfo };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static UnionValue FromAsDecimal(uint i)
         {
-            return new UnionValue { decimal_lo64 = i, unionValueType = UnionValueType.Decimal };
+            return new UnionValue { decimal_lo64 = i, @object = TypeInfo.DecimalInfo };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static UnionValue FromAsDecimal(long i)
@@ -457,24 +353,25 @@ namespace UnionType
             if (i < 0)
             {
                 i = -i;
-                return new UnionValue { decimal_flags = SignMask, decimal_lo64 = (ulong)i, unionValueType = UnionValueType.Decimal };
+                return new UnionValue { decimal_flags = SignMask, decimal_lo64 = (ulong)i, @object = TypeInfo.DecimalInfo    };
             }
-            return new UnionValue { decimal_lo64 = (ulong)i, unionValueType = UnionValueType.Decimal };
+            return new UnionValue { decimal_lo64 = (ulong)i, @object = TypeInfo.DecimalInfo };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static UnionValue FromAsDecimal(ulong i)
         {
-            return new UnionValue { decimal_lo64 = i, unionValueType = UnionValueType.Decimal };
+            return new UnionValue { decimal_lo64 = i, @object = TypeInfo.DecimalInfo };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static UnionValue FromObject<T>(T input, GCHandleType gcHandleType = GCHandleType.Normal)
+        public static UnionValue FromObject<T>(T input)
+            where T:class
         {
-            return UnionValueCreator<T>.Create(input, gcHandleType);
+            return new UnionValue { Object = input };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CleanNoUsed(ref UnionValue value)
         {
-            var size = GetBitsSize(value.unionValueType);
+            var size = GetBitsSize(value.UnionValueType);
             if (size != 16)
             {
                 new Span<byte>(((byte*)value.ToPointer() + size), 17 - size - 1).Fill(0);
@@ -529,7 +426,7 @@ namespace UnionType
                     throw new NotSupportedException(type.ToString());
             }
         }
-        public static unsafe UnionValue FromObject(object input, GCHandleType gcHandleType = GCHandleType.Normal)
+        public static unsafe UnionValue FromObject(object input)
         {
             if (input is TimeSpan ts)
             {
@@ -550,12 +447,12 @@ namespace UnionType
                    return default;
                 case TypeCode.Object:
                     {
-                        var uv = new UnionValue { gcHandleType = (byte)gcHandleType };
+                        var uv = new UnionValue();
                         uv.Object = input;
                         return uv;
                     }
                 case TypeCode.DBNull:
-                    return new UnionValue { UnionValueType = UnionValueType.DBNull };
+                    return new UnionValue { @object = TypeInfo.DBNullInfo };
                 case TypeCode.Boolean:
                     return (bool)input;
                 case TypeCode.Char:
@@ -586,8 +483,8 @@ namespace UnionType
                     return (DateTime)input;
                 case TypeCode.String:
                     {
-                        var uv = new UnionValue { gcHandleType = (byte)gcHandleType };
-                        uv.String = (string)input;
+                        var uv = new UnionValue();
+                        uv.Object = input;
                         return uv;
                     }
                 default:
@@ -598,7 +495,7 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ToUsedBytes()
         {
-            var buffer = new byte[GetBitsSize(unionValueType)];
+            var buffer = new byte[GetBitsSize(UnionValueType)];
             ToBytes(buffer.AsSpan());
             return buffer;
         }
@@ -651,43 +548,12 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T? GetObject<T>()
         {
-            return (T?)GetObject();
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object? GetObject()
-        {
-            return objectHandler.Target;
-        }
-        public void SetObject(object? value)
-        {
-            if (objectHandler.IsAllocated)
-            {
-                objectHandler.Free();
-            }
-            if (value == null)
-            {
-                unionValueType = UnionValueType.Empty;
-                intPtr = IntPtr.Zero;
-                typeName = IntPtr.Zero;
-            }
-            else
-            {
-                ObjectHandler = GCHandle.Alloc(value, (GCHandleType)gcHandleType);
-                if (objectWithType)
-                {
-                    TypeNameType = value!.GetType();
-                }
-                unionValueType = UnionValueType.Object;
-            }
+            return (T?)@object;
         }
 
         public override int GetHashCode()
         {
-            if (unionValueType== UnionValueType.String)
-            {
-                return String?.GetHashCode() ?? 0;
-            }
-            if (unionValueType == UnionValueType.Object)
+            if (UnionValueType == UnionValueType.Object||UnionValueType== UnionValueType.String)
             {
                 return Object?.GetHashCode() ?? 0;
             }
@@ -718,16 +584,15 @@ namespace UnionType
             {
                 case UnionValueType.Empty:
                     return "(null)";
+                case UnionValueType.String:
                 case UnionValueType.Object:
-                    return GetObject()?.ToString();
+                    return @object?.ToString();
                 case UnionValueType.DBNull:
                     return "DBNull";
                 case UnionValueType.DateTime:
                     return dateTime.ToString();
                 case UnionValueType.TimeSpan:
                     return timeSpan.ToString();
-                case UnionValueType.String:
-                    return String;
                 case UnionValueType.Char:
                     return @char.ToString();
                 case UnionValueType.IntPtr:
@@ -801,25 +666,13 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(UnionValue other)
         {
-            if (other.unionValueType!=unionValueType)
+            if (other.UnionValueType!=UnionValueType)
             {
                 return false;
             }
-            if (unionValueType== UnionValueType.String)
+            else if (UnionValueType== UnionValueType.Object||UnionValueType== UnionValueType.String)
             {
-                return other.String == String;
-            }
-            else if (unionValueType== UnionValueType.Object)
-            {
-                if (other.Object==null&&Object==null)
-                {
-                    return true;
-                }
-                if (other.Object == null || Object == null)
-                {
-                    return false;
-                }
-                return other.Object.Equals(Object);
+                return Equals(@object, other.@object);
             }
             return new ReadOnlySpan<byte>(ToPointer(), Size).SequenceEqual(new ReadOnlySpan<byte>(&other, Size));
         }
@@ -998,12 +851,12 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator UnionValue(DBNull val)
         {
-            return new UnionValue { UnionValueType = UnionValueType.DBNull };
+            return new UnionValue { @object = TypeInfo.DBNullInfo };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator UnionValue(string val)
         {
-            return new UnionValue { String = val };
+            return new UnionValue { Object = val };
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator UnionValue(IntPtr val)
@@ -1098,7 +951,7 @@ namespace UnionType
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator string?(UnionValue val)
         {
-            return val.String;
+            return val.@object?.ToString();
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator IntPtr(UnionValue val)
@@ -1131,12 +984,13 @@ namespace UnionType
         }
         public object? Box()
         {
-            switch (unionValueType)
+            switch (UnionValueType)
             {
                 case UnionValueType.Empty:
                     return null;
+                case UnionValueType.String:
                 case UnionValueType.Object:
-                    return GetObject();
+                    return @object;
                 case UnionValueType.DBNull:
                     return DBNull.Value;
                 case UnionValueType.Boolean:
@@ -1167,8 +1021,6 @@ namespace UnionType
                     return @decimal;
                 case UnionValueType.DateTime:
                     return dateTime;
-                case UnionValueType.String:
-                    return String;
                 case UnionValueType.TimeSpan:
                     return timeSpan;
                 case UnionValueType.IntPtr:
@@ -1186,7 +1038,7 @@ namespace UnionType
 
         public bool ToBoolean(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Boolean)
+            if (UnionValueType == UnionValueType.Boolean)
             {
                 return Boolean;
             }
@@ -1195,7 +1047,7 @@ namespace UnionType
 
         public byte ToByte(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Byte)
+            if (UnionValueType == UnionValueType.Byte)
             {
                 return Byte;
             }
@@ -1204,7 +1056,7 @@ namespace UnionType
 
         public char ToChar(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Char)
+            if (UnionValueType == UnionValueType.Char)
             {
                 return @char;
             }
@@ -1213,7 +1065,7 @@ namespace UnionType
 
         public DateTime ToDateTime(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.DateTime)
+            if (UnionValueType == UnionValueType.DateTime)
             {
                 return dateTime;
             }
@@ -1222,7 +1074,7 @@ namespace UnionType
 
         public decimal ToDecimal(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Decimal)
+            if (UnionValueType == UnionValueType.Decimal)
             {
                 return @decimal;
             }
@@ -1231,7 +1083,7 @@ namespace UnionType
 
         public double ToDouble(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Double)
+            if (UnionValueType == UnionValueType.Double)
             {
                 return @double;
             }
@@ -1240,7 +1092,7 @@ namespace UnionType
 
         public short ToInt16(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Int16)
+            if (UnionValueType == UnionValueType.Int16)
             {
                 return @short;
             }
@@ -1249,7 +1101,7 @@ namespace UnionType
 
         public int ToInt32(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Int32)
+            if (UnionValueType == UnionValueType.Int32)
             {
                 return @int;
             }
@@ -1258,7 +1110,7 @@ namespace UnionType
 
         public long ToInt64(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Int64)
+            if (UnionValueType == UnionValueType.Int64)
             {
                 return @long;
             }
@@ -1267,7 +1119,7 @@ namespace UnionType
 
         public sbyte ToSByte(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.SByte)
+            if (UnionValueType == UnionValueType.SByte)
             {
                 return @sbyte;
             }
@@ -1276,7 +1128,7 @@ namespace UnionType
 
         public float ToSingle(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.Single)
+            if (UnionValueType == UnionValueType.Single)
             {
                 return @float;
             }
@@ -1285,9 +1137,9 @@ namespace UnionType
 
         public string ToString(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.String)
+            if (UnionValueType == UnionValueType.String)
             {
-                return String ?? string.Empty;
+                return (string?)@object ?? string.Empty;
             }
             return Convert.ToString(Box(), provider) ?? string.Empty;
         }
@@ -1299,7 +1151,7 @@ namespace UnionType
 
         public ushort ToUInt16(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.UInt16)
+            if (UnionValueType == UnionValueType.UInt16)
             {
                 return @ushort;
             }
@@ -1308,7 +1160,7 @@ namespace UnionType
 
         public uint ToUInt32(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.UInt32)
+            if (UnionValueType == UnionValueType.UInt32)
             {
                 return @uint;
             }
@@ -1317,7 +1169,7 @@ namespace UnionType
 
         public ulong ToUInt64(IFormatProvider? provider)
         {
-            if (unionValueType == UnionValueType.UInt64)
+            if (UnionValueType == UnionValueType.UInt64)
             {
                 return @ulong;
             }
@@ -1336,31 +1188,16 @@ namespace UnionType
 
         public ITypeMaxMinValues? GetMaxMinValues()
         {
-            return MaxMinValueHelper.GetMaxMinValues(unionValueType);
+            return MaxMinValueHelper.GetMaxMinValues(UnionValueType);
         }
         public IWithinRangeable<BigInteger,BigInteger>? GetBigIntegerWithin()
         {
-            var val= MaxMinValueHelper.GetMaxMinValues(unionValueType);
+            var val= MaxMinValueHelper.GetMaxMinValues(UnionValueType);
             return val as IWithinRangeable<BigInteger, BigInteger>;
         }
         public BigInteger ToBigInteger()
         {
             return new BigInteger(ToDecimal(null));
-        }
-
-        public void Dispose()
-        {
-            if (TypeCode == TypeCode.Object || TypeCode == TypeCode.String)
-            {
-                if (objectHandler.IsAllocated)
-                {
-                    objectHandler.Free();
-                }
-                if (typeGCHandler.IsAllocated)
-                {
-                    typeGCHandler.Free();
-                }
-            }
         }
     }
 

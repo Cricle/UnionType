@@ -20,8 +20,8 @@ namespace UnionType.Benchmarks
         public MyConfig()
         {
             AddLogger(BenchmarkDotNet.Loggers.ConsoleLogger.Unicode);
-            AddJob(Job.ShortRun.WithPlatform(Platform.X64).WithGcServer(true).WithRuntime(CoreRuntime.Core70));
-            AddJob(Job.ShortRun.WithPlatform(Platform.X64).WithGcServer(true).WithRuntime(NativeAotRuntime.Net70).WithId("AOT"));
+            AddJob(Job.ShortRun.WithPlatform(Platform.X64).WithGcServer(true).WithRuntime(CoreRuntime.Core80));
+            AddJob(Job.ShortRun.WithPlatform(Platform.X64).WithGcServer(true).WithRuntime(NativeAotRuntime.Net80).WithId("AOT"));
             AddExporter(BenchmarkDotNet.Exporters.MarkdownExporter.GitHub);
             AddAnalyser(EnvironmentAnalyser.Default
                 , OutliersAnalyser.Default

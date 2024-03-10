@@ -1,6 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace UnionType.Benchmarks.Runs
 {
@@ -13,42 +11,38 @@ namespace UnionType.Benchmarks.Runs
         [Benchmark(Baseline = true)]
         public void Decimal()
         {
+            var v = new List<decimal>();
             for (int i = -Count; i < 0; i++)
             {
-                _= new decimal(i);
+                v.Add(new decimal(i));
             }
         }
 
         [Benchmark]
         public void Union()
         {
+            var v = new List<UnionValue>();
             for (int i = -Count; i < 0; i++)
             {
-                UnionValue.FromAsDecimal(i);
+                v.Add(UnionValue.FromAsDecimal(i));
             }
         }
         [Benchmark]
         public void Dynamic()
         {
+            var v = new List<dynamic>();
             for (int i = -Count; i < 0; i++)
             {
-                dynamic _ = i;
+                v.Add(i);
             }
         }
         [Benchmark]
         public void Box()
         {
+            var v = new List<object>();
             for (int i = -Count; i < 0; i++)
             {
-                _ =(object)(decimal)i;
-            }
-        }
-        [Benchmark]
-        public void BigInteger()
-        {
-            for (int i = -Count; i < 0; i++)
-            {
-                _ = new BigInteger(i);
+                v.Add((decimal)i);
             }
         }
     }

@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnionType", "src\UnionType\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnionType.Test", "test\UnionType.Test\UnionType.Test.csproj", "{8BC764AA-3C70-4AA2-82B2-95904FD00F86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnionType.Sample", "samples\UnionType.Sample\UnionType.Sample.csproj", "{D28EE92F-E07E-4529-A635-F03D21C08455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnionType.Sample", "samples\UnionType.Sample\UnionType.Sample.csproj", "{D28EE92F-E07E-4529-A635-F03D21C08455}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{3CB097BD-DD9D-49CB-A995-8A02336DB260}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnionType.Benchmarks", "test\UnionType.Benchmarks\UnionType.Benchmarks.csproj", "{96A9EC5E-3E80-4AD9-AA1E-E413C7FE5097}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnionType.Benchmarks", "test\UnionType.Benchmarks\UnionType.Benchmarks.csproj", "{96A9EC5E-3E80-4AD9-AA1E-E413C7FE5097}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

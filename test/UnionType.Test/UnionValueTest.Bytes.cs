@@ -7,7 +7,7 @@
         {
             var a = 123;
             var bs = UnionValue.FromBytes(BitConverter.GetBytes(a));
-            bs.UnionValueType = UnionValueType.Int32;
+            bs.@object = TypeInfo.Int32Info;
             Assert.AreEqual(a, bs.Int);
             var back = BitConverter.ToInt32(bs.ToBytes(), 0);
             Assert.AreEqual(a, back);

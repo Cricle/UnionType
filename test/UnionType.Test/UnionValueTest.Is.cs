@@ -8,7 +8,8 @@
         [DataRow(UnionValueType.Decimal)]
         public void Equals_True(UnionValueType type)
         {
-            Assert.IsTrue(new UnionValue { UnionValueType = type }.IsFraction());
+            var info= TypeInfo.GetTypeInfo(type);
+            Assert.IsTrue(new UnionValue { @object = info }.IsFraction());
         }
         [TestMethod]
         [DataRow(UnionValueType.DateTime)]
@@ -16,7 +17,8 @@
         [DataRow(UnionValueType.Empty)]
         public void Equals_False(UnionValueType type)
         {
-            Assert.IsFalse(new UnionValue { UnionValueType = type }.IsFraction());
+            var info = TypeInfo.GetTypeInfo(type);
+            Assert.IsFalse(new UnionValue { @object = info }.IsFraction());
         }
     }
 }

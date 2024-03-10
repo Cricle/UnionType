@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace UnionType.Test
+﻿namespace UnionType.Test
 {
     public partial class UnionValueTest
     {
@@ -68,6 +62,10 @@ namespace UnionType.Test
             var uv = UnionValue.FromObject(dt);
             Assert.AreEqual(UnionValueType.IntPtr, uv.UnionValueType);
             Assert.AreEqual(dt, uv.Box());
+
+            uv = UnionValue.FromObject((object)dt);
+            Assert.AreEqual(UnionValueType.IntPtr, uv.UnionValueType);
+            Assert.AreEqual(dt, uv.Box());
         }
         [TestMethod]
         public void FromObject_Object()
@@ -82,6 +80,10 @@ namespace UnionType.Test
         {
             var dt = DBNull.Value;
             var uv = UnionValue.FromObject(dt);
+            Assert.AreEqual(UnionValueType.DBNull, uv.UnionValueType);
+            Assert.AreEqual(dt, uv.Box());
+
+            uv = UnionValue.FromObject((object)dt);
             Assert.AreEqual(UnionValueType.DBNull, uv.UnionValueType);
             Assert.AreEqual(dt, uv.Box());
         }

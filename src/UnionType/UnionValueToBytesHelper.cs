@@ -11,7 +11,7 @@ namespace UnionType
         static UnionValueToBytesHelper()
         {
             var v = new UnionValue();
-            v.String = null;
+            v.Object = null;
             EmptyStringBuffer = v.ToBytes();
         }
 
@@ -37,7 +37,7 @@ namespace UnionType
             offset += UnionValue.Size;
             if (val.UnionValueType == UnionValueType.String)
             {
-                val.String = Encoding.GetString(bytes, offset, bytes.Length - offset);
+                val.Object = Encoding.GetString(bytes, offset, bytes.Length - offset);
             }
             else if (val.UnionValueType == UnionValueType.Object)
             {
@@ -54,7 +54,7 @@ namespace UnionType
                 {
                     throw new InvalidOperationException("Transformer is null");
                 }
-                val.SetObject(Transformer.BytesToObject(bytes, offset, bytes.Length - offset, type));
+                val.Object=(Transformer.BytesToObject(bytes, offset, bytes.Length - offset, type));
             }
             return val;
         }
@@ -66,15 +66,13 @@ namespace UnionType
         }
         public void ToBytes(in UnionValue value, List<byte> lists)
         {
-            if (value.unionValueType == UnionValueType.String)
+            if (value.UnionValueType == UnionValueType.Empty)
             {
                 lists.AddRange(EmptyStringBuffer);
             }
-            else if (value.unionValueType == UnionValueType.Object)
+            else if (value.UnionValueType == UnionValueType.Object)
             {
                 var v = new UnionValue();
-                v.unionValueType = UnionValueType.Object;
-                v.TypeNameString = value.TypeNameString;
                 lists.AddRange(v.ToBytes());
             }
             else
@@ -83,7 +81,7 @@ namespace UnionType
             }
             if (value.UnionValueType == UnionValueType.String)
             {
-                var str = value.String;
+                var str = (string?)value.Object;
                 if (str != null)
                 {
                     lists.AddRange(Encoding.GetBytes(str));
@@ -92,7 +90,8 @@ namespace UnionType
             else if (value.UnionValueType == UnionValueType.Object)
             {
                 var inst = value.Object;
-                var typeName = value.TypeNameString;
+                var type = inst?.GetType();
+                var typeName = type?.AssemblyQualifiedName;
                 if (typeName == null)
                 {
                     throw new InvalidOperationException("typeName is null");
@@ -105,7 +104,7 @@ namespace UnionType
                     {
                         throw new InvalidOperationException("Transformer is null");
                     }
-                    lists.AddRange(Transformer.ObjectToBytes(inst, value.TypeNameType!));
+                    lists.AddRange(Transformer.ObjectToBytes(inst, type!));
                 }
             }
         }

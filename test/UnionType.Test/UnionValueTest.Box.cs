@@ -16,8 +16,7 @@
         [DataRow(UnionValueType.Double, (double)0)]
         public void Box_Primary(UnionValueType type, object val)
         {
-            var uv = new UnionValue();
-            uv.UnionValueType = type;
+            var uv = UnionValue.FromObject(val);
             Assert.AreEqual(uv.Box(), val);
         }
         [TestMethod]
@@ -44,7 +43,7 @@
         [TestMethod]
         public void Box_DBNull()
         {
-            var uv = new UnionValue { UnionValueType = UnionValueType.DBNull };
+            var uv = new UnionValue { Object =DBNull.Value};
             Assert.AreEqual(uv.Box(), DBNull.Value);
         }
         [TestMethod]
@@ -77,7 +76,7 @@
         {
             var ptr = new Student();
             var uv = new UnionValue();
-            uv.SetObject(ptr);
+            uv.Object=(ptr);
             Assert.AreEqual(uv.Box(), ptr);
         }
         [TestMethod]
@@ -85,13 +84,6 @@
         {
             var uv = new UnionValue { String = "123" };
             Assert.AreEqual(uv.Box(), "123");
-        }
-        [TestMethod]
-        public void Box_NotSupport()
-        {
-            var uv = new UnionValue();
-            uv.UnionValueType = (UnionValueType)255;
-            Assert.ThrowsException<NotSupportedException>(() => uv.Box());
         }
         class Student
         {

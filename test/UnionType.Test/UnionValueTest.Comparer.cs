@@ -20,7 +20,7 @@
         public void Comparer_Not_Equals_Type()
         {
             var uv = new UnionValue();
-            uv.SetObject(new object());
+            uv.Object=(new object());
             Assert.ThrowsException<NotSupportedException>(() => uv.CompareTo(123));
         }
     }

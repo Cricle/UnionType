@@ -100,13 +100,13 @@
         public void ObjectEquals()
         {
             var v1 = new UnionValue();
-            v1.SetObject(123);
+            v1.Object=(123);
             var v2 = new UnionValue();
-            v2.SetObject(123);
+            v2.Object=(123);
 
             Assert.AreEqual(v1, v2);
 
-            v2.SetObject(456);
+            v2.Object=(456);
 
             Assert.AreNotEqual(v1, v2);
         }
@@ -114,9 +114,9 @@
         public void ObjectEqualsNulls()
         {
             var v1 = new UnionValue();
-            v1.SetObject(null);
+            v1.Object=(null);
             var v2 = new UnionValue();
-            v2.SetObject(null);
+            v2.Object=(null);
 
             Assert.AreEqual(v1, v2);
         }
@@ -124,9 +124,9 @@
         public void ObjectNotEqualsAnyNull()
         {
             var v1 = new UnionValue();
-            v1.SetObject(123);
+            v1.Object=(123);
             var v2 = new UnionValue();
-            v2.SetObject(null);
+            v2.Object=null;
 
             Assert.AreNotEqual(v1, v2);
         }
@@ -134,7 +134,7 @@
         public void ObjectHashCode()
         {
             var v1 = new UnionValue();
-            v1.SetObject(123);
+            v1.Object=(123);
 
             Assert.AreEqual(v1.Object.GetHashCode(), v1.GetHashCode());
         }

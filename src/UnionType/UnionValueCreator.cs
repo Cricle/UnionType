@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,107 +9,93 @@ namespace UnionType
     {
         public static readonly uint Size = (uint)Unsafe.SizeOf<T>();
 
-        public static readonly UnionValueType Type;
+        public static readonly TypeInfo? TypeInfo;
 
         static UnionValueCreator()
         {
             if (typeof(T) == typeof(TimeSpan))
             {
-                Type = UnionValueType.TimeSpan;
+                TypeInfo = TypeInfo.TimeSpanInfo;
             }
             else if (typeof(T) == typeof(Guid))
             {
-                Type = UnionValueType.Guid;
+                TypeInfo = TypeInfo.GuidInfo;
             }
             else if (typeof(T) == typeof(IntPtr))
             {
-                Type = UnionValueType.IntPtr;
+                TypeInfo = TypeInfo.IntPtrInfo;
             }
             else if (typeof(T) == typeof(bool))
             {
-                Type = UnionValueType.Boolean;
+                TypeInfo = TypeInfo.BooleanInfo;
             }
             else if (typeof(T) == typeof(char))
             {
-                Type = UnionValueType.Char;
+                TypeInfo = TypeInfo.CharInfo;
             }
             else if (typeof(T) == typeof(byte))
             {
-                Type = UnionValueType.Byte;
+                TypeInfo = TypeInfo.ByteInfo;
             }
             else if (typeof(T) == typeof(sbyte))
             {
-                Type = UnionValueType.SByte;
+                TypeInfo = TypeInfo.SByteInfo;
             }
             else if (typeof(T) == typeof(short))
             {
-                Type = UnionValueType.Int16;
+                TypeInfo = TypeInfo.Int16Info;
             }
             else if (typeof(T) == typeof(ushort))
             {
-                Type = UnionValueType.UInt16;
+                TypeInfo = TypeInfo.UInt16Info;
             }
             else if (typeof(T) == typeof(int))
             {
-                Type = UnionValueType.Int32;
+                TypeInfo = TypeInfo.Int32Info;
             }
             else if (typeof(T) == typeof(uint))
             {
-                Type = UnionValueType.UInt32;
+                TypeInfo = TypeInfo.UInt32Info;
             }
             else if (typeof(T) == typeof(long))
             {
-                Type = UnionValueType.Int64;
+                TypeInfo = TypeInfo.Int64Info;
             }
             else if (typeof(T) == typeof(ulong))
             {
-                Type = UnionValueType.UInt64;
+                TypeInfo = TypeInfo.UInt64Info;
             }
             else if (typeof(T) == typeof(float))
             {
-                Type = UnionValueType.Single;
+                TypeInfo = TypeInfo.SingleInfo;
             }
             else if (typeof(T) == typeof(double))
             {
-                Type = UnionValueType.Double;
+                TypeInfo = TypeInfo.DoubleInfo;
             }
             else if (typeof(T) == typeof(decimal))
             {
-                Type = UnionValueType.Decimal;
+                TypeInfo = TypeInfo.DecimalInfo;
             }
             else if (typeof(T) == typeof(DBNull))
             {
-                Type = UnionValueType.DBNull;
-            }
-            else if (typeof(T) == typeof(string))
-            {
-                Type = UnionValueType.String;
+                TypeInfo = TypeInfo.DBNullInfo;
             }
             else if (typeof(T) == typeof(DateTime))
             {
-                Type = UnionValueType.DateTime;
-            }
-            else
-            {
-                Type = UnionValueType.Object;
+                TypeInfo = TypeInfo.DateTimeInfo;
             }
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe UnionValue Create(T value, GCHandleType gcHandleType = GCHandleType.Normal)
+        public static unsafe UnionValue Create(T value)
         {
-            if (Type == UnionValueType.Object)
+            if (TypeInfo == null)
             {
-                var uv=new UnionValue { gcHandleType = (byte)gcHandleType };
-                uv.SetObject(value);
+                var uv = new UnionValue();
+                uv.Object = value;
                 return uv;
             }
-            else if (Type == UnionValueType.String)
-            {
-                var uv = new UnionValue { gcHandleType = (byte)gcHandleType };
-                uv.String= (string?)(object?)value;
-                return uv;
-            }
-            var v = new UnionValue { unionValueType = Type,gcHandleType=(byte)gcHandleType };
+            var v = new UnionValue { @object = TypeInfo };
 #pragma warning disable CS8500
             *(T*)&v = value;
 #pragma warning restore CS8500

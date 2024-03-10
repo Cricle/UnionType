@@ -30,7 +30,7 @@ namespace UnionType.Test
             };
             stu.Value = new UnionValue();
             stu.Value = 123;
-            uv.SetObject(stu);
+            uv.Object=(stu);
             for (int i = 0; i < 10; i++)
             {
                 var str = JsonSerializer.Serialize(uv, opt);
@@ -52,7 +52,7 @@ namespace UnionType.Test
             };
             stu.Value = new UnionValue();
             stu.Value = "aaasssddd";
-            uv.SetObject(stu);
+            uv.Object=(stu);
             for (int i = 0; i < 10; i++)
             {
                 var str = JsonSerializer.Serialize(uv, opt);

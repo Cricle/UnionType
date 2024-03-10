@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
-using System.Runtime.InteropServices;
 
 namespace UnionType.Sample
 {
@@ -12,7 +11,7 @@ namespace UnionType.Sample
             Console.WriteLine($"Min:{int.MinValue}  vs  {num.MinValue}");
             Console.WriteLine($"Max:{int.MaxValue}  vs  {num.MaxValue}");
             Console.WriteLine("Decimal size:" + sizeof(decimal));
-            Console.WriteLine("UnionValue size:" + sizeof(UnionValue));
+            Console.WriteLine("UnionValue size:" + UnionValue.Size);
 
             Console.WriteLine();
 
@@ -40,8 +39,8 @@ namespace UnionType.Sample
 
             var stu = new Student { Id = 123 };
             var stuUv = new UnionValue();
-            stuUv.SetObject(stu);
-            var stuBack = stuUv.GetObject();
+            stuUv.Object=(stu);
+            var stuBack = stuUv.Object;
             Console.WriteLine("Can store instance:");
             Console.WriteLine("Origan hash:" + stu.GetHashCode());
             Console.WriteLine("Back hash  :" + stuBack.GetHashCode());

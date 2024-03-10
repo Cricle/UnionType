@@ -110,7 +110,7 @@ namespace UnionType.Test
         [TestMethod]
         public void CleanNoUsed_HasBits()
         {
-            var uv = new UnionValue { @long = long.MaxValue, unionValueType = UnionValueType.Int32 };
+            var uv = new UnionValue { @long = long.MaxValue, @object = TypeInfo.Int32Info};
             uv.@int = 123;
             var act=UnionValue.CleanNoUsed(ref uv);
             Assert.AreEqual(17 - 1 - sizeof(int), act);

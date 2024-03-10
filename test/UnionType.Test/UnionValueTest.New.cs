@@ -131,13 +131,12 @@
             var v = new UnionValue { String = str };
             Assert.AreEqual(UnionValueType.String, v.UnionValueType);
             Assert.AreEqual(str, v.String);
-            Assert.AreEqual(typeof(string).AssemblyQualifiedName, v.TypeNameString);
         }
         [TestMethod]
         public void NewStringNull()
         {
             var v = new UnionValue { String = null };
-            Assert.AreEqual(UnionValueType.String, v.UnionValueType);
+            Assert.AreEqual(UnionValueType.Empty, v.UnionValueType);
             Assert.IsNull(v.String);
         }
         [TestMethod]
@@ -153,7 +152,7 @@
         {
             var v = new UnionValue { Int = 22 };
             Assert.AreEqual(UnionValueType.Int32, v.UnionValueType);
-            v.SetTypeCode(System.TypeCode.Empty);
+            v.UnionValueType= UnionValueType.Empty;
             Assert.AreEqual(UnionValueType.Empty, v.UnionValueType);
         }
         [TestMethod]

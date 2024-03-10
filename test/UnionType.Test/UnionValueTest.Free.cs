@@ -2,6 +2,11 @@
 {
     public partial class UnionValueTest
     {
+        class A
+        {
+
+        }
+        class B { }
         [TestMethod]
         public void Free_WhenSwitch()
         {
